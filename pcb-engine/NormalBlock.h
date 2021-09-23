@@ -5,35 +5,31 @@
 
 ENGINE_NAMESPACE_BEGIN
 
-class NormalEngineBlockFactory : public IBlock::IFactory
+class NormalEngineBlock : public IBlock
 {
 public:
 
-	/// 获取Class ID
-	const char* clsid(void)
+	class NormalEngineBlockFactory : public IBlock::IFactory
 	{
-		return "NormalEngineBlock";
-	}
+	public:
+		NormalEngineBlockFactory() {
+			registerFactory();
+		}
 
-	/// 获取单例对象
-	IBlock* create(int32_t nodeID)
-	{
-		return NormalEngineBlock::create(nodeID);
-	}
-};
+		~NormalEngineBlockFactory() {
+			unregisterFactory();
+		}
 
-class NormalEngineBlock
-{
-public:
-	NormalEngineBlock(int nodeID);
-	~NormalEngineBlock();
+		IObjectUnknown* create(int nodeId) override {
+			return NormalEngineBlock();
+		}
 
-	static IBlock* create(int32_t nodeID);
+		const char* clsid() const override {
+			return "NormalEngineBlock";
+		}
+	};
 
-private:
 
 };
-
-
 
 ENGINE_NAMESPACE_END
