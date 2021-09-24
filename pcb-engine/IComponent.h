@@ -48,9 +48,6 @@ public:
 
 	/// 销毁组件对象
 	virtual void destroy() = 0;
-
-	/// 获取组件版本号码
-	virtual CVersion getVersion() const = 0;
 };
 
 class COMPONENT_API IFactoryUnknown
@@ -89,17 +86,17 @@ public:
 /// \param [in] iid 接口ID号
 /// \param [in] clsid 实现接口类ID号
 /// \retval 指向组件对象的指针
-extern "C" COMPONENT_API IObjectUnknown * createComponentObject(const char* iid, const char* clsid, int nodeId);
-extern "C" COMPONENT_API IObjectUnknown * getComponentInstance(const char* iid, const char* clsid, int nodeId);
+extern "C" COMPONENT_API IObjectUnknown* createComponentObject(const char* iid, const char* clsid, int nodeId);
+extern "C" COMPONENT_API IObjectUnknown* getComponentInstance(const char* iid, const char* clsid, int nodeId);
 
 template<typename T>
 std::shared_ptr<T> createComponentObject(const char* clsid, int nodeId)
 {
-	return std::shared_ptr<T>((T*)createComponentObject(T::IFactory::siid(), clsid, nodeId));
+	return std::make_shared<T>((T*)createComponentObject(T::IFactory::iid(), clsid, nodeId));
 }
 
 template<class T>
 T* getComponentInstance(const char* clsid, int nodeId) {
-	return (T*)getComponentInstance(T::IFactory::siid(), clsid, nodeId);
+	return (T*)getComponentInstance(T::IFactory::iid(), clsid, nodeId);
 }
 ICOMPONENT_NAMESPACE_END
