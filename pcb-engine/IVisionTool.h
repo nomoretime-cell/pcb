@@ -9,7 +9,7 @@
 VISIONTOOL_NAMESPACE_BEGIN
 
 /// \抽象节点接口
-class COMPONENT_API IVisionTool : public IComponent::IObjectUnknown
+class IVisionTool : public IComponent::IObjectUnknown
 {
 public:
 
@@ -18,10 +18,14 @@ public:
 	{
 	public:
 		/// 组件创建接口
-		virtual IObjectUnknown* create() = 0;
+		virtual IObjectUnknown* create() { return nullptr; };
 
 		/// 组件接口ID定义
-		static const char* iid() { return "IVisionTool"; }
+		virtual const char* iid() { return "IVisionTool"; }
+
+		static const char* siid() { return "IVisionTool"; }
+
+		const char* clsid() { return "VisionTool"; }
 	};
 
 	/// 获取工具ID

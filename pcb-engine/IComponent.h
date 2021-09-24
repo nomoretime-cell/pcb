@@ -92,11 +92,11 @@ extern "C" COMPONENT_API IObjectUnknown* getComponentInstance(const char* iid, c
 template<typename T>
 std::shared_ptr<T> createComponentObject(const char* clsid, int nodeId)
 {
-	return std::make_shared<T>((T*)createComponentObject(T::IFactory::iid(), clsid, nodeId));
+	return std::shared_ptr<T>((T*)createComponentObject(T::IFactory::siid(), clsid, nodeId));
 }
 
 template<class T>
 T* getComponentInstance(const char* clsid, int nodeId) {
-	return (T*)getComponentInstance(T::IFactory::iid(), clsid, nodeId);
+	return (T*)getComponentInstance(T::IFactory::siid(), clsid, nodeId);
 }
 ICOMPONENT_NAMESPACE_END

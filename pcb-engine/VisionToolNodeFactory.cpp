@@ -18,7 +18,8 @@ IVisionToolPtr VisionToolNodeFactory::createNode(std::string toolID, int32_t nod
 		return nullptr;
 	}
 
-	return IComponent::createComponentObject<IVisionTool>(toolID.c_str(), nodeID);
+	//return IComponent::createComponentObject<IVisionTool>(toolID.c_str(), nodeID);
+	return nullptr;
 }
 
 VisionToolNodeFactory::VisionToolNodeFactory()

@@ -13,6 +13,7 @@
     <ClCompile Include="Manager.cpp" />
     <ClCompile Include="NormalBlock.cpp" />
     <ClCompile Include="VisionToolNodeFactory.cpp" />
+    <ClCompile Include="NormalBlockFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommonStruct.h" />
@@ -24,5 +25,6 @@
     <ClInclude Include="Manager.h" />
     <ClInclude Include="NormalBlock.h" />
     <ClInclude Include="VisionToolNodeFactory.h" />
+    <ClInclude Include="NormalBlockFactory.h" />
   </ItemGroup>
 </Project>

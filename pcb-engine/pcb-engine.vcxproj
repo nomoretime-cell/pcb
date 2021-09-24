@@ -143,6 +143,7 @@
     <ClCompile Include="IComponent.cpp" />
     <ClCompile Include="Manager.cpp" />
     <ClCompile Include="NormalBlock.cpp" />
+    <ClCompile Include="NormalBlockFactory.cpp" />
     <ClCompile Include="VisionToolNodeFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -154,6 +155,7 @@
     <ClInclude Include="json.hpp" />
     <ClInclude Include="Manager.h" />
     <ClInclude Include="NormalBlock.h" />
+    <ClInclude Include="NormalBlockFactory.h" />
     <ClInclude Include="VisionToolNodeFactory.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -29,6 +29,8 @@ public:
 		virtual ~IFactory() {}
 
 		virtual const char* iid() { return "IBlock"; }
+
+		static const char* siid() { return "IBlock"; }
 	};
 
 	IBlock() {};
