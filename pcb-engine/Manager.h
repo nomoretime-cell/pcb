@@ -94,6 +94,11 @@ public:
 	/// \retval 在所有block无nodeid对应node对象
 	std::string getNodeResult(_In_ const std::string& nodeID);
 
+	/// \brief 順序添加block
+	/// \param[in] blockType blockType
+	/// \retval blockId
+	std::string addBlock(_In_ const std::string& blockType);
+
 	/// \brief 添加算子
 	/// \param[in] blockID blockID
 	/// \param[in] nodeType nodeType

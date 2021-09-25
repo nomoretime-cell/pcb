@@ -1,6 +1,7 @@
 #include <thread>
 #include "Manager.h"
 #include "json.hpp"
+#include "NormalBlockFactory.h"
 ENGINE_NAMESPACE_BEGIN
 
 Manager* Manager::instance()
@@ -117,6 +118,17 @@ std::string Manager::getNodeResult(_In_ const std::string& nodeID) {
 	}
 	return "";
 }
+
+std::string Manager::addBlock(_In_ const std::string& blockType) {
+	// TODO
+	std::string blockId = "";
+	BlockInfo blockInfo;
+	blockInfo.ptr = Engine::NormalBlockFactory::createNode("NormalBlockFactory", 1);
+	blockInfo.blockId = blockId;
+	m_vecBlockInfos.emplace_back(blockInfo);
+	return blockId;
+}
+
 
 std::string Manager::addNode(_In_ const std::string& blockID, _In_ const std::string& nodeType) {
 	for (const auto& blockInfo : m_vecBlockInfos) {
