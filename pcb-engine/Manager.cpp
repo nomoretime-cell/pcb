@@ -1,5 +1,6 @@
+#include <thread>
 #include "Manager.h"
-
+#include "json.hpp"
 ENGINE_NAMESPACE_BEGIN
 
 Manager* Manager::instance()
@@ -10,6 +11,7 @@ Manager* Manager::instance()
 
 Manager::Manager()
 {
+	m_running = false;
 }
 
 Manager::~Manager()
@@ -62,65 +64,121 @@ std::string Manager::getConfig(_In_ const std::string& nodeID) {
 	return "";
 }
 
-bool Manager::process(_In_ const std::shared_ptr<MvpImage>& img, _In_ std::string runFromBlockID = "", _In_ std::string runToBlockID = "") {
-	for (const auto& blockInfo : m_vecBlockInfos) {
-
-	}
+bool Manager::run(_In_ const std::shared_ptr<MvpImage>& img, _In_ std::string runFromBlockID, _In_ std::string runToBlockID) {
+	m_running = true;
+	m_runThread = std::thread(std::bind(&Manager::innerRun, this, img, runFromBlockID,runToBlockID));
 	return true;
 }
 
+bool Manager::runOnce(_In_ const std::shared_ptr<MvpImage>& img, _In_ std::string runFromBlockID, _In_ std::string runToBlockID) {
+	m_running = false;
+	m_runThread = std::thread(std::bind(&Manager::innerRun, this, img, runFromBlockID, runToBlockID));
+	return true;
+}
+
+void Manager::innerRun(_In_ const std::shared_ptr<MvpImage>& img, _In_ std::string runFromBlockID, _In_ std::string runToBlockID) {
+	// TODO
+	do {
+		for (const auto& blockInfo : m_vecBlockInfos) {
+
+		}
+	} while (m_running);
+}
+
 bool Manager::stop() {
+	m_running = false;
+	m_runThread.join();
 	return true;
 }
 
 bool Manager::command(_In_ const std::string& nodeID, _In_ const std::string& cmd, _In_ const std::shared_ptr<MvpImage>& img, _In_ const std::string& inJson, _Out_ std::string& outJson) {
-	return true;
+	for (const auto& blockInfo : m_vecBlockInfos) {
+		if (blockInfo.ptr->hasNode(nodeID)) {
+			return blockInfo.ptr->command(nodeID, cmd, img, inJson, outJson);
+		}
+	}
+	return false;
 }
 
-std::map<std::string, std::string> Manager::getBlockResult(_In_ const std::string& blockId) {
-	std::map<std::string, std::string> ret;
-	return ret;
+std::map<std::string, std::string> Manager::getBlockResult(_In_ const std::string& blockID) {
+	for (const auto& blockInfo : m_vecBlockInfos) {
+		if (blockInfo.blockId == blockID) {
+			return blockInfo.ptr->getAllNodeResult();
+		}
+	}
+	return std::map<std::string, std::string>();
 }
 
 std::string Manager::getNodeResult(_In_ const std::string& nodeID) {
+	for (const auto& blockInfo : m_vecBlockInfos) {
+		if (blockInfo.ptr->hasNode(nodeID)) {
+			return blockInfo.ptr->getNodeResult(nodeID);
+		}
+	}
 	return "";
 }
 
 std::string Manager::addNode(_In_ const std::string& blockID, _In_ const std::string& nodeType) {
+	for (const auto& blockInfo : m_vecBlockInfos) {
+		if (blockInfo.blockId == blockID) {
+			return blockInfo.ptr->addNode(nodeType);
+		}
+	}
 	return "";
 }
 
 bool Manager::removeNode(_In_ const std::string& blockID, _In_ const std::string& nodeID) {
-	return true;
+	for (const auto& blockInfo : m_vecBlockInfos) {
+		if (blockInfo.blockId == blockID) {
+			return blockInfo.ptr->removeNode(nodeID);
+		}
+	}
+	return false;
 }
 
-std::map<std::string, std::shared_ptr<VisionTool::IVisionTool >> Manager::getBlockNode(_In_ const std::string& blockID) {
-	std::map<std::string, std::shared_ptr<VisionTool::IVisionTool >> ret;
-	return ret;
+std::map<std::string, std::shared_ptr<VisionTool::IVisionTool >> Manager::getAllNode(_In_ const std::string& blockID) {
+	for (const auto& blockInfo : m_vecBlockInfos) {
+		if (blockInfo.blockId == blockID) {
+			return blockInfo.ptr->getAllNode();
+		}
+	}
+	return std::map<std::string, std::shared_ptr<VisionTool::IVisionTool >>();
 }
 
-std::map<std::string, std::shared_ptr<IBlock>> Manager::getAllBlock() {
-	return std::map<std::string, std::shared_ptr<IBlock>>();
+std::vector<BlockInfo> Manager::getAllBlock() {
+	return m_vecBlockInfos;
 }
 
 std::string Manager::getBlockType(const std::string blockID) {
+	for (const auto& blockInfo : m_vecBlockInfos) {
+		if (blockInfo.blockId == blockID) {
+			return blockInfo.ptr->getBlockType();
+		}
+	}
 	return "";
 }
 
 std::string Manager::getNodeType(const std::string nodeID) {
+	for (const auto& blockInfo : m_vecBlockInfos) {
+		if (blockInfo.ptr->hasNode(nodeID)) {
+			return blockInfo.ptr->getNodeType(nodeID);
+		}
+	}
 	return "";
 }
 
-bool Manager::addLink(_In_ const LinkItem& link) {
+bool Manager::addLink(_In_ const std::string& strLink) {
+	LinkItem link = LinkItem::getLinkItem(strLink);
 	for (const auto& blockInfo : m_vecBlockInfos) {
 		blockInfo.ptr->addLink(link);
 	}
 	return true;
 }
 
-bool Manager::deleteLink(_In_ const LinkItem& link) {
-	for (const auto& blockInfo : m_vecBlockInfos) {
-		blockInfo.ptr->deleteLink(link);
+bool Manager::deleteLink(_In_ const std::string& strLink) {
+	LinkItem link = LinkItem::getLinkItem(strLink);
+	for (const auto& blockinfo : m_vecBlockInfos) {
+		blockinfo.ptr->deleteLink(link);
 	}
 	return true;
 }

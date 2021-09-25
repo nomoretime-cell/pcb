@@ -54,9 +54,11 @@ public:
 
 	virtual bool command(_In_ const std::string& nodeID, _In_ const std::string& cmd, _In_ const std::shared_ptr<MvpImage>& img, _In_ const std::string& inJson, _Out_ std::string& outJson)override;
 
-	virtual std::map<std::string, std::string> getAllResult() override;
+	virtual std::map<std::string, std::string> getAllNodeResult() override;
 
-	virtual std::string getResult(_In_ std::string nodeID) override;
+	virtual std::string getNodeResult(_In_ const std::string& nodeID) override;
+
+	virtual std::string getNodeType(_In_ const std::string& nodeID) override;
 
 public:
 	virtual std::string getBlockID() override;

@@ -8,9 +8,24 @@
 // block和平台算子之间接口
 
 #include <iostream>
+#include "json.hpp"
+#include "IBlock.h"
+
+Engine::LinkItem getLinkItem(std::string inparam) {
+    nlohmann::json jObj = nlohmann::json::parse(inparam);
+    Engine::LinkItem linkItem{
+    jObj["fromNodeID"].get<std::string>(),
+    jObj["fromParam"].get<std::string>(),
+    jObj["toNodeID"].get<std::string>(),
+    jObj["toParam"].get<std::string>()
+    };
+    return linkItem;
+}
 
 int main()
 {
+    std::string str = "{\"fromNodeID\": \"1\", \"fromParam\" : \"2\",\"toNodeID\" : \"3\", \"toParam\" : \"4\"}";
+    Engine::LinkItem link = Engine::LinkItem::getLinkItem(str);
     std::cout << "Hello World!\n";
 }
 

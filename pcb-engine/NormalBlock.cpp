@@ -134,14 +134,26 @@ bool NormalEngineBlock::command(_In_ const std::string& nodeID, _In_ const std::
 	}
 }
 
-std::map<std::string, std::string> NormalEngineBlock::getAllResult() {
+std::map<std::string, std::string> NormalEngineBlock::getAllNodeResult() {
 	return m_nodeIDMapResult;
 }
 
-std::string NormalEngineBlock::getResult(_In_ std::string nodeID) {
+std::string NormalEngineBlock::getNodeResult(_In_ const std::string& nodeID) {
 	auto result = m_nodeIDMapResult.find(nodeID);
 	if (result != m_nodeIDMapResult.end()) {
 		return result->second;
+	}
+	else {
+		return "";
+	}
+}
+
+std::string NormalEngineBlock::getNodeType(_In_ const std::string& nodeID) {
+	auto item = m_nodeIDMapNodePtr.find(nodeID);
+	if (item != m_nodeIDMapNodePtr.end()) {
+		std::string nodeType;
+		item->second->getToolID(nodeType);
+		return nodeType;
 	}
 	else {
 		return "";

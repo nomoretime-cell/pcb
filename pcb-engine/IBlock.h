@@ -7,6 +7,7 @@
 #include "Defs.h"
 #include "IComponent.h"
 #include "IVisionTool.h"
+#include "json.hpp"
 
 ENGINE_NAMESPACE_BEGIN
 
@@ -16,7 +17,20 @@ struct LinkItem
 	std::string		fromParam;  ///< 连线的起始点参数 格式如 "point.x"
 	std::string		toNodeID;   ///< 连线的终点
 	std::string		toParam;    ///< 连线的终点参数   格式如 "count"
+
+	static LinkItem getLinkItem(std::string inparam) {
+		nlohmann::json jObj = nlohmann::json::parse(inparam);
+		LinkItem linkItem{
+		jObj["fromNodeID"].get<std::string>(),
+		jObj["fromParam"].get<std::string>(),
+		jObj["toNodeID"].get<std::string>(),
+		jObj["toParam"].get<std::string>()
+		};
+		return linkItem;
+	}
 };
+
+
 
 class IBlock : public IComponent::IObjectUnknown
 {
@@ -82,11 +96,15 @@ public:
 
 	/// \brief	获取block所有结果
 	/// \retval		nodeid对应结果
-	virtual std::map<std::string, std::string> getAllResult() = 0;
+	virtual std::map<std::string, std::string> getAllNodeResult() = 0;
 
 	/// \brief	获取指定nodeid结果
 	/// \retval		nodeid结果
-	virtual std::string getResult(_In_ std::string nodeID) = 0;
+	virtual std::string getNodeResult(_In_ const std::string& nodeID) = 0;
+
+	/// \brief	获取指定nodeid 算子类型
+	/// \retval		算子类型
+	virtual std::string getNodeType(_In_ const std::string& nodeID) = 0;
 
 	/// \brief	获取block id
 	/// \retval	block id
