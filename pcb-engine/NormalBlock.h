@@ -40,7 +40,6 @@ public:
 
 	virtual void destroy() override;
 
-public:
 	virtual bool initAllNode(_In_ const std::shared_ptr<MvpImage>& img, _In_ const std::map<std::string, std::string>& nodeIDMapInitConfigJson) override;
 
 	virtual bool initNode(_In_ const std::shared_ptr<MvpImage>& img, _In_ const std::string& nodeID, _In_ const std::string& initConfigJson) override;
@@ -66,7 +65,7 @@ public:
 
 	virtual bool removeNode(_In_ const std::string& nodeID) override;
 
-	virtual std::map<std::string, VisionTool::IVisionToolPtr> getAllNode() override;
+	virtual std::map<std::string, std::shared_ptr<VisionTool::IVisionTool >> getAllNode() override;
 
 	virtual bool addLink(_In_ const std::string& fromNodeID, _In_ const std::string& toNodeID) override;
 
@@ -74,7 +73,7 @@ public:
 
 private:
 	std::string											m_blockID;			///< block id
-	std::map<std::string, VisionTool::IVisionToolPtr>	m_nodeIDMapNodePtr;	///< 算子
+	std::map<std::string, std::shared_ptr<VisionTool::IVisionTool >>	m_nodeIDMapNodePtr;	///< 算子
 	std::map<std::string, std::string>					m_nodeIDMapResult;	///< 算子结果
 	std::vector<LinkItem>								m_links;			///< 连接关系
 };

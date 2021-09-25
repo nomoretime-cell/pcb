@@ -8,18 +8,14 @@ VisionToolNodeFactory* VisionToolNodeFactory::instance()
 	return &ins;
 }
 
-/// \brief 创建节点对象
-/// \param[in]  toolID    工具ID
-/// \retval     节点对象
-IVisionToolPtr VisionToolNodeFactory::createNode(std::string toolID, int32_t nodeID)
+std::shared_ptr<VisionTool::IVisionTool > VisionToolNodeFactory::innerCreateNode(std::string toolID, int32_t nodeID)
 {
-	if (toolID == "" || nodeID < 0)
-	{
+	if (toolID == "" || nodeID < 0){
 		return nullptr;
 	}
 
-	//return IComponent::createComponentObject<IVisionTool>(toolID.c_str(), nodeID);
-	return nullptr;
+	return IComponent::createComponentObject<IVisionTool>(toolID.c_str(), nodeID);
+	//return nullptr;
 }
 
 VisionToolNodeFactory::VisionToolNodeFactory()

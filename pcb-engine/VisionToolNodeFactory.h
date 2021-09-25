@@ -8,15 +8,15 @@ VISIONTOOL_NAMESPACE_BEGIN
 class VisionToolNodeFactory
 {
 public:
-	static VisionToolNodeFactory* instance();
-
-	IVisionToolPtr createNode(std::string nodeType, int32_t nodeID);
+	static std::shared_ptr<IVisionTool> createNode(std::string toolID, int32_t nodeID) {
+		return VisionToolNodeFactory::instance()->createNode(toolID, nodeID);
+	}
 
 private:
+	static VisionToolNodeFactory* instance();
+	std::shared_ptr<IVisionTool> innerCreateNode(std::string toolID, int32_t nodeID);
 	VisionToolNodeFactory();
 	~VisionToolNodeFactory();
 };
-
-#define CREATE_VISIONTOOLNODE(toolID,nodeID) VisionToolNodeFactory::instance()->createNode(toolID, nodeID)
 
 VISIONTOOL_NAMESPACE_END

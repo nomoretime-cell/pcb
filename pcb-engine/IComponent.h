@@ -95,8 +95,8 @@ std::shared_ptr<T> createComponentObject(const char* clsid, int nodeId)
 	return std::shared_ptr<T>((T*)createComponentObject(T::IFactory::siid(), clsid, nodeId));
 }
 
-template<class T>
-T* getComponentInstance(const char* clsid, int nodeId) {
-	return (T*)getComponentInstance(T::IFactory::siid(), clsid, nodeId);
+template<typename T>
+std::shared_ptr<T> getComponentInstance(const char* clsid, int nodeId) {
+	return std::shared_ptr<T>((T*)getComponentInstance(T::IFactory::siid(), clsid, nodeId));
 }
 ICOMPONENT_NAMESPACE_END

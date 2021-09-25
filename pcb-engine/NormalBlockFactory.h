@@ -10,15 +10,14 @@ ENGINE_NAMESPACE_BEGIN
 class NormalBlockFactory
 {
 public:
-	static NormalBlockFactory* instance();
-
-	std::shared_ptr<IBlock> createNode(std::string nodeType, int32_t nodeID);
-
+	static std::shared_ptr<IBlock> createNode(std::string toolID, int32_t nodeID) {
+		return NormalBlockFactory::instance()->innerCreateNode(toolID, nodeID);
+	}
 private:
+	static NormalBlockFactory* instance();
+	std::shared_ptr<IBlock> innerCreateNode(std::string toolID, int32_t nodeID);
 	NormalBlockFactory();
 	~NormalBlockFactory();
 };
-
-#define CREATE_VISIONTOOLNODE(toolID,nodeID) VisionToolNodeFactory::instance()->createNode(toolID, nodeID)
 
 ENGINE_NAMESPACE_END

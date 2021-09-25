@@ -8,25 +8,22 @@
 
 VISIONTOOL_NAMESPACE_BEGIN
 
-/// \抽象节点接口
 class IVisionTool : public IComponent::IObjectUnknown
 {
 public:
-
-	/// 组件工厂
 	class IFactory : public IComponent::IFactoryUnknown
 	{
 	public:
-		/// 组件创建接口
-		virtual IObjectUnknown* create() { return nullptr; };
 
-		/// 组件接口ID定义
+		virtual ~IFactory() {}
+
 		virtual const char* iid() { return "IVisionTool"; }
 
 		static const char* siid() { return "IVisionTool"; }
-
-		const char* clsid() { return "VisionTool"; }
 	};
+
+	IVisionTool() {};
+	virtual ~IVisionTool() {}
 
 	/// 获取工具ID
 	/// \param[out] id   工具ID
@@ -86,12 +83,6 @@ public:
 	/// \retval    true  成功   false 失败
 	virtual bool command(const std::string& cmd, const std::string& inParam, const std::string& outParam) = 0;
 
-protected:
-
-	/// \brief 虚析构
-	virtual ~IVisionTool() {}
 };
-
-typedef std::shared_ptr<IVisionTool> IVisionToolPtr;
 
 VISIONTOOL_NAMESPACE_END

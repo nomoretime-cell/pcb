@@ -1,3 +1,4 @@
+#include <memory>
 #include "NormalBlock.h"
 #include "VisionToolNodeFactory.h"
 ENGINE_NAMESPACE_BEGIN
@@ -58,16 +59,16 @@ std::string NormalEngineBlock::getBlockID() {
 
 std::string NormalEngineBlock::addNode(_In_ const std::string& nodeType) {
 	int nodeId = 0;
-	VisionTool::IVisionToolPtr node = VisionTool::CREATE_VISIONTOOLNODE(nodeType, nodeId);
+	std::shared_ptr<VisionTool::IVisionTool > node = VisionTool::VisionToolNodeFactory::createNode(nodeType, nodeId);
 	if (node == nullptr) {
 		return "";
 	}
-	m_nodeIDMapNodePtr.insert(std::pair<std::string, VisionTool::IVisionToolPtr>());
+	m_nodeIDMapNodePtr.insert(std::pair<std::string, std::shared_ptr<VisionTool::IVisionTool>>());
 	return std::string("");
 }
 
 bool NormalEngineBlock::removeNode(_In_ const std::string& nodeID) {
-	std::map<std::string, VisionTool::IVisionToolPtr>::iterator pos = m_nodeIDMapNodePtr.find(nodeID);
+	std::map<std::string, std::shared_ptr<VisionTool::IVisionTool >>::iterator pos = m_nodeIDMapNodePtr.find(nodeID);
 	if (pos != m_nodeIDMapNodePtr.end()) 
 	{
 		m_nodeIDMapNodePtr.erase(pos);
@@ -75,7 +76,7 @@ bool NormalEngineBlock::removeNode(_In_ const std::string& nodeID) {
 	return true;
 }
 
-std::map<std::string, VisionTool::IVisionToolPtr> NormalEngineBlock::getAllNode() {
+std::map<std::string, std::shared_ptr<VisionTool::IVisionTool>> NormalEngineBlock::getAllNode() {
 	return m_nodeIDMapNodePtr;
 }
 

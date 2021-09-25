@@ -105,7 +105,7 @@ public:
 
 	/// \brief	获取所有算子id
 	/// \retval 此block下的所有算子id
-	virtual std::map<std::string, VisionTool::IVisionToolPtr> getAllNode() = 0;
+	virtual std::map<std::string, std::shared_ptr<VisionTool::IVisionTool>> getAllNode() = 0;
 
 	/// \brief	 增加连线（fromNodeID来自上一个block）
 	/// \param[in]	fromNodeID	源算子id
@@ -119,8 +119,6 @@ public:
 	/// \param[in]	toNodeID		目标算子id
 	/// \retval		是否更新连线成功
 	virtual bool updateLinks(_In_ const std::string& oldfromNodeID, _In_ const std::string& newfromNodeID, _In_ const std::string& toNodeID) = 0;
-
-protected:
 
 };
 

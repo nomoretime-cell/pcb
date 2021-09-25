@@ -5,6 +5,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="VisionTool">
+      <UniqueIdentifier>{b0bd83ea-dde1-4a3b-aaa3-d6f3faff2a30}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Block.cpp" />
@@ -20,11 +23,14 @@
     <ClInclude Include="Defs.h" />
     <ClInclude Include="IBlock.h" />
     <ClInclude Include="IComponent.h" />
-    <ClInclude Include="IVisionTool.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="Manager.h" />
     <ClInclude Include="NormalBlock.h" />
     <ClInclude Include="VisionToolNodeFactory.h" />
     <ClInclude Include="NormalBlockFactory.h" />
+    <ClInclude Include="VisionToolMock.hpp" />
+    <ClInclude Include="IVisionTool.h">
+      <Filter>VisionTool</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
