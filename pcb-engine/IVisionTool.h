@@ -71,7 +71,7 @@ public:
 	/// \param[in]  cfgName 配置名称
 	/// \param[out] cfgList 配置
 	/// \retval     true  成功   false 失败
-	virtual bool getConfig(const std::string& cfgList) const = 0;
+	virtual bool getConfig(std::string& cfgList) const = 0;
 
 	/// \brief 命令运行
 	/// \param[in] cmd  "AddInputParam"  添加输入参数
@@ -83,7 +83,7 @@ public:
 	/// \param[in]  inParam  输入参数
 	/// \param[out] outParam 输出参数
 	/// \retval    true  成功   false 失败
-	virtual bool command(const std::string& cmd, const std::shared_ptr<MvpImage>& img, const std::string& inParam, const std::string& outParam) = 0;
+	virtual bool command(const std::string& cmd, const std::shared_ptr<MvpImage>& img, const std::string& inParam, std::string& outParam) = 0;
 
 };
 

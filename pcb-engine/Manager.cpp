@@ -18,7 +18,7 @@ Manager::~Manager()
 {
 }
 
-bool Manager::initBlock(_In_ std::string blockID, _In_ const std::shared_ptr<MvpImage>& img, _In_ const std::map<std::string, std::string>& nodeIDMapInitConfigJson) {
+bool Manager::initBlock(_In_ const std::string& blockID, _In_ const std::shared_ptr<MvpImage>& img, _In_ const std::map<std::string, std::string>& nodeIDMapInitConfigJson) {
 	for (const auto& blockInfo : m_vecBlockInfos) {
 		if (blockInfo.blockId == blockID) {
 			blockInfo.ptr->initAllNode(img, nodeIDMapInitConfigJson);
@@ -28,7 +28,7 @@ bool Manager::initBlock(_In_ std::string blockID, _In_ const std::shared_ptr<Mvp
 	return false;
 }
 
-bool Manager::initNode(_In_ const std::shared_ptr<MvpImage>& img, _In_ const std::string& nodeID, _In_ const std::string& initConfigJson) {
+bool Manager::initNode(_In_ const std::string& nodeID, _In_ const std::shared_ptr<MvpImage>& img, _In_ const std::string& initConfigJson) {
 	for (const auto& blockInfo : m_vecBlockInfos) {
 		if (blockInfo.ptr->hasNode(nodeID)) {
 			return blockInfo.ptr->initNode(img, nodeID, initConfigJson);
@@ -149,7 +149,7 @@ std::vector<BlockInfo> Manager::getAllBlock() {
 	return m_vecBlockInfos;
 }
 
-std::string Manager::getBlockType(const std::string blockID) {
+std::string Manager::getBlockType(const std::string& blockID) {
 	for (const auto& blockInfo : m_vecBlockInfos) {
 		if (blockInfo.blockId == blockID) {
 			return blockInfo.ptr->getBlockType();
@@ -158,7 +158,7 @@ std::string Manager::getBlockType(const std::string blockID) {
 	return "";
 }
 
-std::string Manager::getNodeType(const std::string nodeID) {
+std::string Manager::getNodeType(const std::string& nodeID) {
 	for (const auto& blockInfo : m_vecBlockInfos) {
 		if (blockInfo.ptr->hasNode(nodeID)) {
 			return blockInfo.ptr->getNodeType(nodeID);

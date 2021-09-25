@@ -31,14 +31,14 @@ public:
 	/// \param[in] img 图像
 	/// \param[in] nodeIDMapInitConfigJson	node对应初始化参数
 	/// \retval 没有blockID对应对象返回false
-	bool initBlock(_In_ std::string blockID, _In_ const std::shared_ptr<MvpImage>& img, _In_ const std::map<std::string, std::string>& nodeIDMapInitConfigJson);
+	bool initBlock(_In_ const std::string& blockID, _In_ const std::shared_ptr<MvpImage>& img, _In_ const std::map<std::string, std::string>& nodeIDMapInitConfigJson);
 
 	/// \brief 初始化特定node
-	/// \param[in] img 图像指针
 	/// \param[in] nodeID nodeID
+	/// \param[in] img 图像指针
 	/// \param[in] initConfigJson 初始化参数
 	/// \retval 在所有block无nodeid对应node对象
-	bool initNode(_In_ const std::shared_ptr<MvpImage>& img, _In_ const std::string& nodeID, _In_ const std::string& initConfigJson);
+	bool initNode(_In_ const std::string& nodeID, _In_ const std::shared_ptr<MvpImage>& img, _In_ const std::string& initConfigJson);
 
 	/// \brief 设置算子输入参数
 	/// \param[in] nodeID nodeID
@@ -105,11 +105,11 @@ public:
 	/// \param[in] nodeID nodeID
 	/// \retval 找不到nodeID对应的算子实例
 	bool removeNode(_In_ const std::string& blockID, _In_ const std::string& nodeID);
-	
+
 	/// \brief 获取blockid下所有node
 	/// \param[in] blockID blockID
 	/// \retval nodeid对应的node对象
-	std::map<std::string, std::shared_ptr<VisionTool::IVisionTool >> getAllNode(_In_ const std::string& blockID);
+	std::map<std::string, std::shared_ptr<VisionTool::IVisionTool>> getAllNode(_In_ const std::string& blockID);
 
 	/// \brief 获取blockid下所有node
 	/// \param[in] blockID blockID
@@ -119,12 +119,12 @@ public:
 	/// \brief 获取blockid对应的blocktype
 	/// \param[in] blockID blockID
 	/// \retval block type
-	std::string getBlockType(const std::string blockID);
+	std::string getBlockType(const std::string& blockID);
 
 	/// \brief 获取nodeID对应的node type
 	/// \param[in] nodeID nodeID
 	/// \retval node type
-	std::string getNodeType(const std::string nodeID);
+	std::string getNodeType(const std::string& nodeID);
 
 	/// \brief 增加连线
 	/// \param[in] 连线对象的序列化参数
