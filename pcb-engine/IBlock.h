@@ -5,7 +5,6 @@
 #include <memory>
 #include <map>
 #include "Defs.h"
-#include "CommonStruct.h"
 #include "IComponent.h"
 #include "IVisionTool.h"
 
@@ -13,9 +12,9 @@ ENGINE_NAMESPACE_BEGIN
 
 struct LinkItem
 {
-	int32_t			fromNodeID; ///< 连线的起始点
+	std::string		fromNodeID; ///< 连线的起始点
 	std::string		fromParam;  ///< 连线的起始点参数 格式如 "point.x"
-	int32_t			toNodeID;   ///< 连线的终点
+	std::string		toNodeID;   ///< 连线的终点
 	std::string		toParam;    ///< 连线的终点参数   格式如 "count"
 };
 
@@ -79,7 +78,7 @@ public:
 	/// \param[in]	inJson		输入参数
 	/// \param[in]	outJson		输出结果
 	/// \retval		true  成功   false 失败
-	virtual bool command(_In_ const std::shared_ptr<MvpImage>& img, _In_ const std::string& nodeID, _In_ const std::string& inJson, _Out_ std::string& outJson) = 0;
+	virtual bool command(_In_ const std::string& nodeID, _In_ const std::string& cmd, _In_ const std::shared_ptr<MvpImage>& img, _In_ const std::string& inJson, _Out_ std::string& outJson) = 0;
 
 	/// \brief	获取block所有结果
 	/// \retval		nodeid对应结果
@@ -92,6 +91,10 @@ public:
 	/// \brief	获取block id
 	/// \retval	block id
 	virtual std::string getBlockID() = 0;
+
+	/// \brief	获取block id
+	/// \retval	block id
+	virtual std::string getBlockType() = 0;
 	
 	/// \brief	增加算子
 	/// \param[in]	nodeType	算子类型
@@ -103,22 +106,24 @@ public:
 	/// \retval		是否删除成功
 	virtual bool removeNode(_In_ const std::string& nodeID) = 0;
 
+	/// \brief	是否包含nodeid
+	/// \param[in]	nodeID	算子id
+	/// \retval		是否删除成功
+	virtual bool hasNode(_In_ const std::string& nodeID) = 0;
+
 	/// \brief	获取所有算子id
 	/// \retval 此block下的所有算子id
 	virtual std::map<std::string, std::shared_ptr<VisionTool::IVisionTool>> getAllNode() = 0;
 
 	/// \brief	 增加连线（fromNodeID来自上一个block）
-	/// \param[in]	fromNodeID	源算子id
-	/// \param[in]	toNodeID	目标算子id
+	/// \param[in]	link 连线信息
 	/// \retval		是否连线成功
-	virtual bool addLink(_In_ const std::string& fromNodeID, _In_ const std::string& toNodeID) = 0;
+	virtual bool addLink(_In_ const LinkItem& link) = 0;
 
 	/// \brief	 更新连线（fromNodeID来自上一个block）
-	/// \param[in]	oldfromNodeID	老源算子id
-	/// \param[in]	newfromNodeID	新源算子id
-	/// \param[in]	toNodeID		目标算子id
+	/// \param[in]	link 连线信息
 	/// \retval		是否更新连线成功
-	virtual bool updateLinks(_In_ const std::string& oldfromNodeID, _In_ const std::string& newfromNodeID, _In_ const std::string& toNodeID) = 0;
+	virtual bool deleteLink(_In_ const LinkItem& link) = 0;
 
 };
 

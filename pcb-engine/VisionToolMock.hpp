@@ -43,17 +43,17 @@ public:
 
 	virtual bool setInputParam(const std::string& inputList) override { return true; };
 
-	virtual bool init(const std::string& inputList) override { return true; };
+	virtual bool init(const std::shared_ptr<MvpImage>& img, const std::string& inputList) override { return true; };
 
 	virtual bool uninit() override { return true; };
 
-	virtual bool process(const std::string& inParam, std::string& outParam) override { return true; };
+	virtual bool process(const std::shared_ptr<MvpImage>& img, const std::string& inParam, std::string& outParam) override { return true; };
 
 	virtual bool setConfig(const std::string& cfgList) override { return true; };
 
 	virtual bool getConfig(const std::string& cfgList) const override { return true; };
 
-	virtual bool command(const std::string& cmd, const std::string& inParam, const std::string& outParam)override { return true; };
+	virtual bool command(const std::string& cmd, const std::shared_ptr<MvpImage>& img, const std::string& inParam, const std::string& outParam)override { return true; };
 
 private:
 

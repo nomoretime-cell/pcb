@@ -139,7 +139,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\pcb\main.cpp" />
-    <ClCompile Include="Block.cpp" />
     <ClCompile Include="IComponent.cpp" />
     <ClCompile Include="Manager.cpp" />
     <ClCompile Include="NormalBlock.cpp" />
@@ -149,7 +148,6 @@
   <ItemGroup>
     <ClInclude Include="Defs.h" />
     <ClInclude Include="IBlock.h" />
-    <ClInclude Include="CommonStruct.h" />
     <ClInclude Include="IComponent.h" />
     <ClInclude Include="IVisionTool.h" />
     <ClInclude Include="json.hpp" />

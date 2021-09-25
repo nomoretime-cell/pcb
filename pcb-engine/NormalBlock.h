@@ -52,7 +52,7 @@ public:
 
 	virtual bool process(_In_ const std::shared_ptr<MvpImage>& img, _In_ std::map<std::string, std::string>& nodeMapInJson, _Out_ std::map<std::string, std::string>& nodeMapOutJson) override;
 
-	virtual bool command(_In_ const std::shared_ptr<MvpImage>& img, _In_ const std::string& nodeID, _In_ const std::string& inJson, _Out_ std::string& outJson)override;
+	virtual bool command(_In_ const std::string& nodeID, _In_ const std::string& cmd, _In_ const std::shared_ptr<MvpImage>& img, _In_ const std::string& inJson, _Out_ std::string& outJson)override;
 
 	virtual std::map<std::string, std::string> getAllResult() override;
 
@@ -61,21 +61,30 @@ public:
 public:
 	virtual std::string getBlockID() override;
 
+	virtual std::string getBlockType() override;
+
 	virtual std::string addNode(_In_ const std::string& nodeType) override;
 
 	virtual bool removeNode(_In_ const std::string& nodeID) override;
 
+	virtual bool hasNode(_In_ const std::string& nodeID) override;
+
 	virtual std::map<std::string, std::shared_ptr<VisionTool::IVisionTool >> getAllNode() override;
 
-	virtual bool addLink(_In_ const std::string& fromNodeID, _In_ const std::string& toNodeID) override;
+	virtual bool addLink(_In_ const LinkItem& link) override;
 
-	virtual bool updateLinks(_In_ const std::string& oldfromNodeID, _In_ const std::string& newfromNodeID, _In_ const std::string& toNodeID) override;
+	virtual bool deleteLink(_In_ const LinkItem& link) override;
 
 private:
-	std::string											m_blockID;			///< block id
-	std::map<std::string, std::shared_ptr<VisionTool::IVisionTool >>	m_nodeIDMapNodePtr;	///< 算子
-	std::map<std::string, std::string>					m_nodeIDMapResult;	///< 算子结果
-	std::vector<LinkItem>								m_links;			///< 连接关系
+
+	std::string getFromNodeID(_In_ const std::string& thisNodeId);
+
+private:
+	std::string											m_blockID;						///< block id
+	std::string											m_blockType;					///< block type
+	std::map<std::string, std::shared_ptr<VisionTool::IVisionTool>>	m_nodeIDMapNodePtr;	///< 算子
+	std::map<std::string, std::string>					m_nodeIDMapResult;				///< 算子结果
+	std::vector<LinkItem>								m_links;						///< 连接关系
 };
 
 ENGINE_NAMESPACE_END

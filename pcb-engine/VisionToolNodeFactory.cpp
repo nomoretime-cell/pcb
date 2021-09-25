@@ -15,7 +15,6 @@ std::shared_ptr<VisionTool::IVisionTool > VisionToolNodeFactory::innerCreateNode
 	}
 
 	return IComponent::createComponentObject<IVisionTool>(toolID.c_str(), nodeID);
-	//return nullptr;
 }
 
 VisionToolNodeFactory::VisionToolNodeFactory()

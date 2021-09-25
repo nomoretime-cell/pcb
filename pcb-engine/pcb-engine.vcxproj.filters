@@ -1,36 +1,64 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="VisionTool">
       <UniqueIdentifier>{b0bd83ea-dde1-4a3b-aaa3-d6f3faff2a30}</UniqueIdentifier>
     </Filter>
+    <Filter Include="VisionTool\Common">
+      <UniqueIdentifier>{ff44e95d-197d-425e-ab1b-8f118405351f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Block">
+      <UniqueIdentifier>{96ddfa62-fd7e-4260-95a0-99eb9678714d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Block\Common">
+      <UniqueIdentifier>{730ac0d0-6a10-456d-bf90-3616ec50bfb8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lib">
+      <UniqueIdentifier>{c95a7d56-9931-46b8-a9bf-aada0778283f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Block.cpp" />
-    <ClCompile Include="IComponent.cpp" />
-    <ClCompile Include="..\pcb\main.cpp" />
     <ClCompile Include="Manager.cpp" />
-    <ClCompile Include="NormalBlock.cpp" />
-    <ClCompile Include="VisionToolNodeFactory.cpp" />
-    <ClCompile Include="NormalBlockFactory.cpp" />
+    <ClCompile Include="VisionToolNodeFactory.cpp">
+      <Filter>VisionTool\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="NormalBlockFactory.cpp">
+      <Filter>Block\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="NormalBlock.cpp">
+      <Filter>Block</Filter>
+    </ClCompile>
+    <ClCompile Include="IComponent.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pcb\main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CommonStruct.h" />
     <ClInclude Include="Defs.h" />
-    <ClInclude Include="IBlock.h" />
-    <ClInclude Include="IComponent.h" />
-    <ClInclude Include="json.hpp" />
     <ClInclude Include="Manager.h" />
-    <ClInclude Include="NormalBlock.h" />
-    <ClInclude Include="VisionToolNodeFactory.h" />
-    <ClInclude Include="NormalBlockFactory.h" />
-    <ClInclude Include="VisionToolMock.hpp" />
-    <ClInclude Include="IVisionTool.h">
+    <ClInclude Include="VisionToolMock.hpp">
       <Filter>VisionTool</Filter>
+    </ClInclude>
+    <ClInclude Include="IVisionTool.h">
+      <Filter>VisionTool\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="VisionToolNodeFactory.h">
+      <Filter>VisionTool\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="IBlock.h">
+      <Filter>Block\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="NormalBlockFactory.h">
+      <Filter>Block\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="NormalBlock.h">
+      <Filter>Block</Filter>
+    </ClInclude>
+    <ClInclude Include="json.hpp">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="IComponent.h">
+      <Filter>Lib</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

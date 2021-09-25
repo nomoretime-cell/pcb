@@ -46,19 +46,21 @@ public:
 	virtual bool setInputParam(const std::string& inputList) = 0;
 
 	/// \brief 初始化算子
+	/// \param[in]  img  图像信息
 	/// \param[in]  param  初始化参数
 	/// \retval     true 成功   false 失败
-	virtual bool init(const std::string& inputList) = 0;
+	virtual bool init(const std::shared_ptr<MvpImage>& img, const std::string& inputList) = 0;
 
 	/// \brief 反初始化算子
 	/// \retval     true 成功   false 失败
 	virtual bool uninit() = 0;
 
 	/// \brief 处理接口
+	/// \param[in]  img  图像信息
 	/// \param[in]  inParam  输入参数
 	/// \param[out] outParam 输出参数
 	/// \retval     true 成功   false 失败
-	virtual bool process(const std::string& inParam, std::string& outParam) = 0;
+	virtual bool process(const std::shared_ptr<MvpImage>& img, const std::string& inParam, std::string& outParam) = 0;
 
 	/// \brief 配置设置
 	/// \param[in] cfgList 配置
@@ -81,7 +83,7 @@ public:
 	/// \param[in]  inParam  输入参数
 	/// \param[out] outParam 输出参数
 	/// \retval    true  成功   false 失败
-	virtual bool command(const std::string& cmd, const std::string& inParam, const std::string& outParam) = 0;
+	virtual bool command(const std::string& cmd, const std::shared_ptr<MvpImage>& img, const std::string& inParam, const std::string& outParam) = 0;
 
 };
 
