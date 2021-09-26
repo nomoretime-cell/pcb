@@ -78,10 +78,21 @@ bool Manager::runOnce(_In_ const std::shared_ptr<MvpImage>& img, _In_ std::strin
 }
 
 void Manager::innerRun(_In_ const std::shared_ptr<MvpImage>& img, _In_ std::string runFromBlockID, _In_ std::string runToBlockID) {
-	// TODO
+	std::map<std::string, std::string> nodeMapInJson;
+	std::map<std::string, std::string> nodeMapOutJson;
+	bool isRunning = false;
 	do {
 		for (const auto& blockInfo : m_vecBlockInfos) {
-
+			if (!isRunning && runFromBlockID != "" && blockInfo.blockId != runFromBlockID) {
+				continue;
+			}
+			isRunning = true;
+			nodeMapInJson = nodeMapOutJson;
+			nodeMapOutJson = std::map<std::string, std::string>();
+			blockInfo.ptr->process(img, nodeMapInJson, nodeMapOutJson);
+			if (isRunning && runToBlockID == blockInfo.blockId) {
+				break;
+			}
 		}
 	} while (m_running);
 }
