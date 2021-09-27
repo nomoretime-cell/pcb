@@ -13,6 +13,7 @@ Manager* Manager::instance()
 Manager::Manager()
 {
 	m_running = false;
+	m_blockIndex = 0;
 }
 
 Manager::~Manager()
@@ -32,7 +33,7 @@ bool Manager::initBlock(_In_ const std::string& blockID, _In_ const std::shared_
 bool Manager::initNode(_In_ const std::string& nodeID, _In_ const std::shared_ptr<MvpImage>& img, _In_ const std::string& initConfigJson) {
 	for (const auto& blockInfo : m_vecBlockInfos) {
 		if (blockInfo.ptr->hasNode(nodeID)) {
-			return blockInfo.ptr->initNode(img, nodeID, initConfigJson);
+			return blockInfo.ptr->initNode(nodeID, img, initConfigJson);
 		}
 	}
 	return false;
@@ -65,9 +66,9 @@ std::string Manager::getConfig(_In_ const std::string& nodeID) {
 	return "";
 }
 
-bool Manager::run(_In_ const std::shared_ptr<MvpImage>& img, _In_ std::string runFromBlockID, _In_ std::string runToBlockID) {
+bool Manager::run(_In_ const std::shared_ptr<MvpImage>& img) {
 	m_running = true;
-	m_runThread = std::thread(std::bind(&Manager::innerRun, this, img, runFromBlockID,runToBlockID));
+	m_runThread = std::thread(std::bind(&Manager::innerRun, this, img, "", ""));
 	return true;
 }
 
@@ -78,19 +79,27 @@ bool Manager::runOnce(_In_ const std::shared_ptr<MvpImage>& img, _In_ std::strin
 }
 
 void Manager::innerRun(_In_ const std::shared_ptr<MvpImage>& img, _In_ std::string runFromBlockID, _In_ std::string runToBlockID) {
+	// key：node id， value：node结果
+	// nodeMapInJson 上一个block中所有node的结果
 	std::map<std::string, std::string> nodeMapInJson;
+	// nodeMapOutJson 当前block中所有node的结果
 	std::map<std::string, std::string> nodeMapOutJson;
 	bool isRunning = false;
 	do {
 		for (const auto& blockInfo : m_vecBlockInfos) {
-			if (!isRunning && runFromBlockID != "" && blockInfo.blockId != runFromBlockID) {
+			if (!isRunning 
+				&& runFromBlockID != "" 
+				&& blockInfo.blockId != runFromBlockID) {
 				continue;
 			}
 			isRunning = true;
+			// 将上一个block中所有node结果，作为下一个block的输入
 			nodeMapInJson = nodeMapOutJson;
+			// 对当前block的所有node结果进行清空
 			nodeMapOutJson = std::map<std::string, std::string>();
 			blockInfo.ptr->process(img, nodeMapInJson, nodeMapOutJson);
-			if (isRunning && runToBlockID == blockInfo.blockId) {
+			if (isRunning 
+				&& runToBlockID == blockInfo.blockId) {
 				break;
 			}
 		}
@@ -131,10 +140,9 @@ std::string Manager::getNodeResult(_In_ const std::string& nodeID) {
 }
 
 std::string Manager::addBlock(_In_ const std::string& blockType) {
-	// TODO
-	std::string blockId = "";
+	std::string blockId = BLOCK_TYPE + std::to_string(++m_blockIndex);
 	BlockInfo blockInfo;
-	blockInfo.ptr = Engine::NormalBlockFactory::createNode("NormalBlockFactory", 1);
+	blockInfo.ptr = Engine::NormalBlockFactory::createNode(BLOCK_TYPE, m_blockIndex);
 	blockInfo.blockId = blockId;
 	m_vecBlockInfos.emplace_back(blockInfo);
 	return blockId;

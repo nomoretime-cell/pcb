@@ -8,6 +8,7 @@
 #include "IComponent.h"
 #include "IVisionTool.h"
 #include "json.hpp"
+#include "NodeIDCreator.hpp"
 
 ENGINE_NAMESPACE_BEGIN
 
@@ -30,8 +31,6 @@ struct LinkItem
 	}
 };
 
-
-
 class IBlock : public IComponent::IObjectUnknown
 {
 public:
@@ -41,7 +40,7 @@ public:
 
 		virtual ~IFactory() {}
 
-		virtual const char* iid() { return "IBlock"; }
+		const char* iid() const override { return "IBlock"; }
 
 		static const char* siid() { return "IBlock"; }
 	};
@@ -60,7 +59,7 @@ public:
 	/// \param[in]	nodeID			nodeid
 	/// \param[in]	initConfigJson	初始化参数
 	/// \retval		true  成功   false 失败
-	virtual bool initNode(_In_ const std::shared_ptr<MvpImage>& img, _In_ const std::string& nodeID, _In_ const std::string& initConfigJson) = 0;
+	virtual bool initNode(_In_ const std::string& nodeID, _In_ const std::shared_ptr<MvpImage>& img,  _In_ const std::string& initConfigJson) = 0;
 
 	/// \brief	设置算子输入参数
 	/// \param[in]	nodeID			nodeid

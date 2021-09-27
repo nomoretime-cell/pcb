@@ -17,7 +17,7 @@ public:
 
 		virtual ~IFactory() {}
 
-		virtual const char* iid() { return "IVisionTool"; }
+		const char* iid() const override { return "IVisionTool"; }
 
 		static const char* siid() { return "IVisionTool"; }
 	};

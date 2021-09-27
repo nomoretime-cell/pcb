@@ -7,9 +7,8 @@
 
 ENGINE_NAMESPACE_BEGIN
 
-class NormalEngineBlock : public IBlock
+class NormalBlock : public IBlock
 {
-
 public:
 
 	class NormalEngineBlockFactory : public IBlock::IFactory
@@ -23,26 +22,26 @@ public:
 			unregisterFactory();
 		}
 
-		NormalEngineBlock* create(int nodeId) override {
-			return new NormalEngineBlock();
+		NormalBlock* create(int blockId) override {
+			return new NormalBlock(blockId);
 		}
 
 		const char* clsid() const override {
-			return "NormalEngineBlock";
+			return "NormalBlock";
 		}
 	};
 private:
 
 
 public:
-	NormalEngineBlock();
-	~NormalEngineBlock();
+	NormalBlock(int blockId);
+	virtual ~NormalBlock();
 
 	virtual void destroy() override;
 
 	virtual bool initAllNode(_In_ const std::shared_ptr<MvpImage>& img, _In_ const std::map<std::string, std::string>& nodeIDMapInitConfigJson) override;
 
-	virtual bool initNode(_In_ const std::shared_ptr<MvpImage>& img, _In_ const std::string& nodeID, _In_ const std::string& initConfigJson) override;
+	virtual bool initNode(_In_ const std::string& nodeID, _In_ const std::shared_ptr<MvpImage>& img, _In_ const std::string& initConfigJson) override;
 
 	virtual bool setInput(_In_ const std::string& nodeID, _In_ const std::string& inputJson) override;
 
@@ -82,11 +81,11 @@ private:
 	std::string getFromNodeID(_In_ const std::string& thisNodeId);
 
 private:
-	std::string											m_blockID;						///< block id
-	std::string											m_blockType;					///< block type
+	std::string	m_blockType = "NormalBlock";										///< block type
+	std::string	m_blockID;																///< block id
 	std::map<std::string, std::shared_ptr<VisionTool::IVisionTool>>	m_nodeIDMapNodePtr;	///< 算子
-	std::map<std::string, std::string>					m_nodeIDMapResult;				///< 算子结果
-	std::vector<LinkItem>								m_links;						///< 连接关系
+	std::map<std::string, std::string> m_nodeIDMapResult;								///< 算子结果
+	std::vector<LinkItem> m_links;														///< 连接关系
 };
 
 ENGINE_NAMESPACE_END

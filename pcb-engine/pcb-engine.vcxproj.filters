@@ -31,7 +31,7 @@
     <ClCompile Include="IComponent.cpp">
       <Filter>Lib</Filter>
     </ClCompile>
-    <ClCompile Include="..\pcb\main.cpp" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Defs.h" />
@@ -60,5 +60,6 @@
     <ClInclude Include="IComponent.h">
       <Filter>Lib</Filter>
     </ClInclude>
+    <ClInclude Include="NodeIDCreator.hpp" />
   </ItemGroup>
 </Project>

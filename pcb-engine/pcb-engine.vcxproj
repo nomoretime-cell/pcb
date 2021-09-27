@@ -152,6 +152,7 @@
     <ClInclude Include="IVisionTool.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="Manager.h" />
+    <ClInclude Include="NodeIDCreator.hpp" />
     <ClInclude Include="NormalBlock.h" />
     <ClInclude Include="NormalBlockFactory.h" />
     <ClInclude Include="VisionToolMock.hpp" />

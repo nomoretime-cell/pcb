@@ -26,7 +26,7 @@ private:
 
 public:
 
-	/// \brief 初始化block下所有node
+	/// \brief 初始化block下所有node（在nodeIDMapInitConfigJson中找不到对应node配置时，配置参数传入空）
 	/// \param[in] blockID blockID
 	/// \param[in] img 图像
 	/// \param[in] nodeIDMapInitConfigJson	node对应初始化参数
@@ -62,7 +62,7 @@ public:
 	/// \param[in] runFromBlockID 开始block id
 	/// \param[in] runToBlockID 结束block id
 	/// \retval true 成功 false 失败
-	bool run(_In_ const std::shared_ptr<MvpImage>& img, _In_ std::string runFromBlockID = "", _In_ std::string runToBlockID = "");
+	bool run(_In_ const std::shared_ptr<MvpImage>& img);
 
 	/// \brief 运行一次
 	/// \param[in] img 图像指针
@@ -86,7 +86,7 @@ public:
 
 	/// \brief 获取blockid对应所有node结果
 	/// \param[in] blockId blockId
-	/// \retval 本地没有blockid对应的block
+	/// \retval 该block下所有nodeid以及其对应的结果
 	std::map<std::string, std::string> getBlockResult(_In_ const std::string& blockId);
 
 	/// \brief 获取nodeid对应所有node结果
@@ -146,9 +146,11 @@ private:
 	void innerRun(_In_ const std::shared_ptr<MvpImage>& img, _In_ std::string runFromBlockID, _In_ std::string runToBlockID);
 
 private:
-	std::vector<BlockInfo> m_vecBlockInfos;
-	std::atomic<bool> m_running;
-	std::thread m_runThread;
+	std::string	BLOCK_TYPE = "NormalBlock";		// block type
+	std::atomic<int> m_blockIndex;				// block index 随着block增加递增
+	std::vector<BlockInfo> m_vecBlockInfos;		// block 数组
+	std::atomic<bool> m_running;				// 流程运行状态
+	std::thread m_runThread;					// 运行线程
 };
 
 ENGINE_NAMESPACE_END

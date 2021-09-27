@@ -8,21 +8,22 @@
 
 ENGINE_NAMESPACE_BEGIN
 
-static int blockIdIndex = 0;
+// 注册 NormalBlock 对象
+static NormalBlock::NormalEngineBlockFactory registerBlock;
 
-NormalEngineBlock::NormalEngineBlock() {
-	m_blockID = "NormalEngineBlock" + std::to_string(++blockIdIndex);
+NormalBlock::NormalBlock(int blockId) {
+	m_blockID = "NormalBlock" + std::to_string(blockId);
 }
 
-NormalEngineBlock::~NormalEngineBlock() {
+NormalBlock::~NormalBlock() {
 
 }
 
-void NormalEngineBlock::destroy() {
+void NormalBlock::destroy() {
 	delete this;
 }
 
-bool NormalEngineBlock::initAllNode(_In_ const std::shared_ptr<MvpImage>& img, _In_ const std::map<std::string, std::string>& nodeIDMapInitConfigJson){
+bool NormalBlock::initAllNode(_In_ const std::shared_ptr<MvpImage>& img, _In_ const std::map<std::string, std::string>& nodeIDMapInitConfigJson){
 	for (const auto& node : m_nodeIDMapNodePtr) {
 		auto nodeConfig = nodeIDMapInitConfigJson.find(node.first);
 		if (nodeConfig != nodeIDMapInitConfigJson.end()) {
@@ -35,7 +36,7 @@ bool NormalEngineBlock::initAllNode(_In_ const std::shared_ptr<MvpImage>& img, _
 	return true;
 }
 
-bool NormalEngineBlock::initNode(_In_ const std::shared_ptr<MvpImage>& img, _In_ const std::string& nodeID, _In_ const std::string& initConfigJson) {
+bool NormalBlock::initNode(_In_ const std::string& nodeID, _In_ const std::shared_ptr<MvpImage>& img,  _In_ const std::string& initConfigJson) {
 	auto node = m_nodeIDMapNodePtr.find(nodeID);
 	if (node != m_nodeIDMapNodePtr.end()) {
 		node->second->init(img, initConfigJson);
@@ -46,7 +47,7 @@ bool NormalEngineBlock::initNode(_In_ const std::shared_ptr<MvpImage>& img, _In_
 	}
 }
 
-bool NormalEngineBlock::setInput(_In_ const std::string& nodeID, _In_ const std::string& inputJson) {
+bool NormalBlock::setInput(_In_ const std::string& nodeID, _In_ const std::string& inputJson) {
 	auto node = m_nodeIDMapNodePtr.find(nodeID);
 	if (node != m_nodeIDMapNodePtr.end()) {
 		node->second->setInputParam(inputJson);
@@ -57,7 +58,7 @@ bool NormalEngineBlock::setInput(_In_ const std::string& nodeID, _In_ const std:
 	}
 }
 
-bool NormalEngineBlock::setConfig(_In_ const std::string& nodeID, _In_ const std::string& configJson) {
+bool NormalBlock::setConfig(_In_ const std::string& nodeID, _In_ const std::string& configJson) {
 	auto node = m_nodeIDMapNodePtr.find(nodeID);
 	if (node != m_nodeIDMapNodePtr.end()) {
 		node->second->setConfig(configJson);
@@ -68,7 +69,7 @@ bool NormalEngineBlock::setConfig(_In_ const std::string& nodeID, _In_ const std
 	}
 }
 
-std::string NormalEngineBlock::getConfig(_In_ const std::string& nodeID) {
+std::string NormalBlock::getConfig(_In_ const std::string& nodeID) {
 	std::string config;
 	auto node = m_nodeIDMapNodePtr.find(nodeID);
 	if (node != m_nodeIDMapNodePtr.end()) {
@@ -84,27 +85,29 @@ std::string NormalEngineBlock::getConfig(_In_ const std::string& nodeID) {
 	}
 }
 
-bool NormalEngineBlock::process(_In_ const std::shared_ptr<MvpImage>& img, _In_ std::map<std::string, std::string>& nodeMapInJson, _Out_ std::map<std::string, std::string>& nodeMapOutJson) {
+bool NormalBlock::process(_In_ const std::shared_ptr<MvpImage>& img, _In_ std::map<std::string, std::string>& nodeMapInJson, _Out_ std::map<std::string, std::string>& nodeMapOutJson) {
 	// 算子并行计算
 	std::map<std::string, std::future<std::string>&> nodeIdMapFuture;
 	for (const auto& node : m_nodeIDMapNodePtr) {
 		std::string thisNodeId = node.first;
 		auto		thisNodePtr = node.second;
 		std::string thisNodeResult;
+
 		std::string lastNodeId = getFromNodeID(thisNodeId);
-		std::string lastNodeResult;
+		std::string lastNodeResult = "";
 
 		if (lastNodeId == "") {
-			// error
-			continue;
+			// thisNode是第一个算子
 		}
-
-		auto lastNodePair = nodeMapInJson.find(lastNodeId);
-		if (lastNodePair == nodeMapInJson.end()) {
-			// error, no lastNode result
-			continue;
+		else {
+			// thisNode有被连为输入算子
+			auto lastNodePair = nodeMapInJson.find(lastNodeId);
+			if (lastNodePair == nodeMapInJson.end()) {
+				// error 有连线，但是id对应的算子指针为空
+				continue;
+			}
+			lastNodeResult = lastNodePair->second;
 		}
-		lastNodeResult = lastNodePair->second;
 
 		std::future<std::string> future = std::async(std::launch::async, [=] {
 			std::string result;
@@ -115,6 +118,7 @@ bool NormalEngineBlock::process(_In_ const std::shared_ptr<MvpImage>& img, _In_ 
 		nodeIdMapFuture.emplace(std::pair<std::string, std::future<std::string>&>(thisNodeId, future));
 	}
 
+	// 等待所有并行算子结束运行
 	for (const std::pair<std::string, std::future<std::string>&> f : nodeIdMapFuture) {
 		std::string nodeId = f.first;
 		std::future<std::string>& future = f.second;
@@ -124,7 +128,7 @@ bool NormalEngineBlock::process(_In_ const std::shared_ptr<MvpImage>& img, _In_ 
 	return true;
 }
 
-bool NormalEngineBlock::command(_In_ const std::string& nodeID, _In_ const std::string& cmd, _In_ const std::shared_ptr<MvpImage>& img, _In_ const std::string& inJson, _Out_ std::string& outJson) {
+bool NormalBlock::command(_In_ const std::string& nodeID, _In_ const std::string& cmd, _In_ const std::shared_ptr<MvpImage>& img, _In_ const std::string& inJson, _Out_ std::string& outJson) {
 	auto node = m_nodeIDMapNodePtr.find(nodeID);
 	if (node != m_nodeIDMapNodePtr.end()) {
 		return node->second->command(cmd, img, inJson, outJson);
@@ -134,11 +138,11 @@ bool NormalEngineBlock::command(_In_ const std::string& nodeID, _In_ const std::
 	}
 }
 
-std::map<std::string, std::string> NormalEngineBlock::getAllNodeResult() {
+std::map<std::string, std::string> NormalBlock::getAllNodeResult() {
 	return m_nodeIDMapResult;
 }
 
-std::string NormalEngineBlock::getNodeResult(_In_ const std::string& nodeID) {
+std::string NormalBlock::getNodeResult(_In_ const std::string& nodeID) {
 	auto result = m_nodeIDMapResult.find(nodeID);
 	if (result != m_nodeIDMapResult.end()) {
 		return result->second;
@@ -148,7 +152,7 @@ std::string NormalEngineBlock::getNodeResult(_In_ const std::string& nodeID) {
 	}
 }
 
-std::string NormalEngineBlock::getNodeType(_In_ const std::string& nodeID) {
+std::string NormalBlock::getNodeType(_In_ const std::string& nodeID) {
 	auto item = m_nodeIDMapNodePtr.find(nodeID);
 	if (item != m_nodeIDMapNodePtr.end()) {
 		std::string nodeType;
@@ -160,25 +164,26 @@ std::string NormalEngineBlock::getNodeType(_In_ const std::string& nodeID) {
 	}
 }
 
-std::string NormalEngineBlock::getBlockID() {
+std::string NormalBlock::getBlockID() {
 	return m_blockID;
 }
 
-std::string NormalEngineBlock::getBlockType() {
+std::string NormalBlock::getBlockType() {
 	return m_blockType;
 }
 
-std::string NormalEngineBlock::addNode(_In_ const std::string& nodeType) {
-	int nodeId = 0;
+std::string NormalBlock::addNode(_In_ const std::string& nodeType) {
+	int nodeId = NodeIDCreator::instance()->getID();
 	std::shared_ptr<VisionTool::IVisionTool > node = VisionTool::VisionToolNodeFactory::createNode(nodeType, nodeId);
 	if (node == nullptr) {
 		return "";
 	}
-	m_nodeIDMapNodePtr.insert(std::pair<std::string, std::shared_ptr<VisionTool::IVisionTool>>(std::to_string(nodeId), node));
-	return std::to_string(nodeId);
+	std::string strNodeid = m_blockType + std::to_string(nodeId);
+	m_nodeIDMapNodePtr.insert(std::pair<std::string, std::shared_ptr<VisionTool::IVisionTool>>(strNodeid, node));
+	return strNodeid;
 }
 
-bool NormalEngineBlock::removeNode(_In_ const std::string& nodeID) {
+bool NormalBlock::removeNode(_In_ const std::string& nodeID) {
 	std::map<std::string, std::shared_ptr<VisionTool::IVisionTool >>::iterator pos = m_nodeIDMapNodePtr.find(nodeID);
 	if (pos != m_nodeIDMapNodePtr.end()) 
 	{
@@ -187,7 +192,7 @@ bool NormalEngineBlock::removeNode(_In_ const std::string& nodeID) {
 	return true;
 }
 
-bool NormalEngineBlock::hasNode(_In_ const std::string& nodeID) {
+bool NormalBlock::hasNode(_In_ const std::string& nodeID) {
 	auto node = m_nodeIDMapNodePtr.find(nodeID);
 	if (node == m_nodeIDMapNodePtr.end()) {
 		return false;
@@ -197,11 +202,11 @@ bool NormalEngineBlock::hasNode(_In_ const std::string& nodeID) {
 	}
 }
 
-std::map<std::string, std::shared_ptr<VisionTool::IVisionTool>> NormalEngineBlock::getAllNode() {
+std::map<std::string, std::shared_ptr<VisionTool::IVisionTool>> NormalBlock::getAllNode() {
 	return m_nodeIDMapNodePtr;
 }
 
-bool NormalEngineBlock::addLink(_In_ const LinkItem& link) {
+bool NormalBlock::addLink(_In_ const LinkItem& link) {
 	std::vector<LinkItem>::iterator it = m_links.begin();
 	for (; it != m_links.end(); ++it)
 	{
@@ -218,7 +223,7 @@ bool NormalEngineBlock::addLink(_In_ const LinkItem& link) {
 	return true;
 }
 
-bool NormalEngineBlock::deleteLink(_In_ const LinkItem& link) {
+bool NormalBlock::deleteLink(_In_ const LinkItem& link) {
 	std::vector<LinkItem>::iterator it = m_links.begin();
 	for (; it != m_links.end(); ++it)
 	{
@@ -235,7 +240,7 @@ bool NormalEngineBlock::deleteLink(_In_ const LinkItem& link) {
 	return false;
 }
 
-std::string NormalEngineBlock::getFromNodeID(_In_ const std::string& thisNodeId) {
+std::string NormalBlock::getFromNodeID(_In_ const std::string& thisNodeId) {
 	for (const auto& link: m_links) {
 		if (link.toNodeID == thisNodeId) {
 			return link.fromNodeID;
