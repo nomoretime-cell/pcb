@@ -52,6 +52,12 @@ public:
 	/// \retval 在所有block无nodeid对应node对象
 	bool setConfig(_In_ const std::string& nodeID, _In_ const std::string& configJson);
 
+	/// \brief 设置算子输出结果（用于找边失败后，手动画找边）
+	/// \param[in] nodeID nodeID
+	/// \param[in] inputJson 输入参数
+	/// \retval 在所有block无nodeid对应node对象
+	bool setOutput(_In_ const std::string& nodeID, _In_ const std::string& inputJson);
+
 	/// \brief 获取算子配置参数
 	/// \param[in] nodeID nodeid
 	/// \retval 在所有block无nodeid对应node对象
@@ -62,7 +68,7 @@ public:
 	/// \param[in] runFromBlockID 开始block id
 	/// \param[in] runToBlockID 结束block id
 	/// \retval true 成功 false 失败
-	bool run(_In_ const std::shared_ptr<MvpImage>& img);
+	bool run(_In_ const std::shared_ptr<MvpImage>& img, _In_ std::string runFromBlockID = "");
 
 	/// \brief 运行一次
 	/// \param[in] img 图像指针

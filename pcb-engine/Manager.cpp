@@ -57,6 +57,15 @@ bool Manager::setConfig(_In_ const std::string& nodeID, _In_ const std::string& 
 	return false;
 }
 
+bool Manager::setOutput(_In_ const std::string& nodeID, _In_ const std::string& inputJson) {
+	for (const auto& blockInfo : m_vecBlockInfos) {
+		if (blockInfo.ptr->hasNode(nodeID)) {
+			return blockInfo.ptr->setOutput(nodeID, inputJson);
+		}
+	}
+	return false;
+}
+
 std::string Manager::getConfig(_In_ const std::string& nodeID) {
 	for (const auto& blockInfo : m_vecBlockInfos) {
 		if (blockInfo.ptr->hasNode(nodeID)) {
@@ -66,9 +75,9 @@ std::string Manager::getConfig(_In_ const std::string& nodeID) {
 	return "";
 }
 
-bool Manager::run(_In_ const std::shared_ptr<MvpImage>& img) {
+bool Manager::run(_In_ const std::shared_ptr<MvpImage>& img, _In_ std::string runFromBlockID) {
 	m_running = true;
-	m_runThread = std::thread(std::bind(&Manager::innerRun, this, img, "", ""));
+	m_runThread = std::thread(std::bind(&Manager::innerRun, this, img, runFromBlockID, ""));
 	return true;
 }
 
@@ -97,7 +106,11 @@ void Manager::innerRun(_In_ const std::shared_ptr<MvpImage>& img, _In_ std::stri
 			nodeMapInJson = nodeMapOutJson;
 			// 对当前block的所有node结果进行清空
 			nodeMapOutJson = std::map<std::string, std::string>();
-			blockInfo.ptr->process(img, nodeMapInJson, nodeMapOutJson);
+			if (!blockInfo.ptr->process(img, nodeMapInJson, nodeMapOutJson))
+			{
+				break;
+			}
+
 			if (isRunning 
 				&& runToBlockID == blockInfo.blockId) {
 				break;

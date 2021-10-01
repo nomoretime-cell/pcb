@@ -73,6 +73,12 @@ public:
 	/// \retval		true  成功   false 失败
 	virtual bool setConfig(_In_ const std::string& nodeID, _In_ const std::string& configJson) = 0;
 
+	/// \brief 设置算子输出结果（用于找边失败后，手动画找边）
+	/// \param[in] nodeID nodeID
+	/// \param[in] inputJson 输入参数
+	/// \retval 在所有block无nodeid对应node对象
+	virtual bool setOutput(_In_ const std::string& nodeID, _In_ const std::string& resultJson) = 0;
+
 	/// \brief	获取算子配置参数
 	/// \param[in]	nodeID			nodeid
 	/// \retval		算子配置参数

@@ -69,6 +69,16 @@ bool NormalBlock::setConfig(_In_ const std::string& nodeID, _In_ const std::stri
 	}
 }
 
+bool NormalBlock::setOutput(_In_ const std::string& nodeID, _In_ const std::string& resultJson) {
+	auto item = m_nodeIDMapResult.find(nodeID);
+	if (item != m_nodeIDMapResult.end()) {
+		m_nodeIDMapResult.erase(item);
+	}
+
+	m_nodeIDMapResult.insert(std::pair<std::string, std::string>(nodeID, resultJson));
+	return true;
+}
+
 std::string NormalBlock::getConfig(_In_ const std::string& nodeID) {
 	std::string config;
 	auto node = m_nodeIDMapNodePtr.find(nodeID);
@@ -87,6 +97,7 @@ std::string NormalBlock::getConfig(_In_ const std::string& nodeID) {
 
 bool NormalBlock::process(_In_ const std::shared_ptr<MvpImage>& img, _In_ std::map<std::string, std::string>& nodeMapInJson, _Out_ std::map<std::string, std::string>& nodeMapOutJson) {
 	// 算子并行计算
+	std::shared_ptr<std::atomic<bool>> runningState =std::make_shared<std::atomic<bool>>(true);
 	std::map<std::string, std::future<std::string>&> nodeIdMapFuture;
 	for (const auto& node : m_nodeIDMapNodePtr) {
 		std::string thisNodeId = node.first;
@@ -111,7 +122,8 @@ bool NormalBlock::process(_In_ const std::shared_ptr<MvpImage>& img, _In_ std::m
 
 		std::future<std::string> future = std::async(std::launch::async, [=] {
 			std::string result;
-			thisNodePtr->process(img, lastNodeResult, result);
+			bool state = thisNodePtr->process(img, lastNodeResult, result);
+			runningState->store(runningState->load() && state);
 			return result;
 			});
 
@@ -125,7 +137,7 @@ bool NormalBlock::process(_In_ const std::shared_ptr<MvpImage>& img, _In_ std::m
 		std::string nodeResult = future.get();
 		m_nodeIDMapResult.insert(std::pair<std::string, std::string>(nodeId, nodeResult));
 	}
-	return true;
+	return runningState->load();
 }
 
 bool NormalBlock::command(_In_ const std::string& nodeID, _In_ const std::string& cmd, _In_ const std::shared_ptr<MvpImage>& img, _In_ const std::string& inJson, _Out_ std::string& outJson) {

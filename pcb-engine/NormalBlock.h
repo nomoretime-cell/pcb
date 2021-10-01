@@ -47,6 +47,8 @@ public:
 
 	virtual bool setConfig(_In_ const std::string& nodeID, _In_ const std::string& configJson) override;
 
+	virtual bool setOutput(_In_ const std::string& nodeID, _In_ const std::string& resultJson) override;
+
 	virtual std::string getConfig(_In_ const std::string& nodeID) override;
 
 	virtual bool process(_In_ const std::shared_ptr<MvpImage>& img, _In_ std::map<std::string, std::string>& nodeMapInJson, _Out_ std::map<std::string, std::string>& nodeMapOutJson) override;
