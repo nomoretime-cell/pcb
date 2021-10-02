@@ -89,7 +89,7 @@ public:
 	/// \param[in]	nodeMapInJson		输入参数
 	/// \param[in]	nodeMapOutJson		输出结果
 	/// \retval		true  成功   false 失败
-	virtual bool process(_In_ const std::shared_ptr<MvpImage>& img, _In_ std::map<std::string, std::string>& nodeMapInJson, _Out_ std::map<std::string, std::string>& nodeMapOutJson) = 0;
+	virtual bool process(_InOut_ std::shared_ptr<MvpImage> img, _In_ std::map<std::string, std::string>& nodeMapInJson, _Out_ std::map<std::string, std::string>& nodeMapOutJson) = 0;
 
 	/// \brief	CMD函数
 	/// \param[in]	img			图像指针
@@ -148,6 +148,8 @@ public:
 	/// \retval		是否更新连线成功
 	virtual bool deleteLink(_In_ const LinkItem& link) = 0;
 
+	/// \brief	 清除block下所有缓存结果
+	virtual void clearResult() = 0;
 };
 
 ENGINE_NAMESPACE_END

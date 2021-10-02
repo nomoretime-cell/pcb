@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <string>
 #include "Defs.h"
 #include "IVisionTool.h"
 
@@ -21,7 +22,7 @@ public:
 		}
 
 		VisionToolMock* create(int nodeId) override {
-			return new VisionToolMock();
+			return new VisionToolMock(std::to_string(nodeId));
 		}
 
 		const char* clsid() const override {
@@ -31,7 +32,9 @@ public:
 
 
 public:
-	VisionToolMock() {};
+	VisionToolMock(std::string nodeID) {
+		m_nodeID = nodeID;
+	};
 	~VisionToolMock() {};
 
 	virtual void destroy() override {delete this;};
@@ -48,7 +51,10 @@ public:
 
 	virtual bool uninit() override { return true; };
 
-	virtual bool process(const std::shared_ptr<MvpImage>& img, const std::string& inParam, std::string& outParam) override { return true; };
+	virtual bool process(std::shared_ptr<MvpImage> img, const std::string& inParam, std::string& outParam) override { 
+		outParam = m_nodeID;
+		return true; 
+	}
 
 	virtual bool setConfig(const std::string& cfgList) override { return true; };
 
@@ -61,7 +67,7 @@ public:
 	};
 
 private:
-
+	std::string m_nodeID;
 };
 
 VISIONTOOL_NAMESPACE_END

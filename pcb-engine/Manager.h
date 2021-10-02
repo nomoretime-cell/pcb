@@ -69,14 +69,14 @@ public:
 	/// \param[in] runFromBlockID 开始block id
 	/// \param[in] runToBlockID 结束block id
 	/// \retval true 成功 false 失败
-	bool run(_In_ const std::shared_ptr<MvpImage>& img, _In_ std::string runFromBlockID = "");
+	bool run(_In_ std::shared_ptr<MvpImage> img, _In_ std::string runFromBlockID = "");
 
 	/// \brief 运行一次
 	/// \param[in] img 图像指针
 	/// \param[in] runFromBlockID 开始block id
 	/// \param[in] runToBlockID 结束block id
 	/// \retval true 成功 false 失败
-	bool runOnce(_In_ const std::shared_ptr<MvpImage>& img, _In_ std::string runFromBlockID = "", _In_ std::string runToBlockID = "");
+	bool runOnce(_In_ std::shared_ptr<MvpImage> img, _In_ std::string runFromBlockID = "", _In_ std::string runToBlockID = "");
 
 	/// \brief 停止运行
 	/// \retval true 成功 false 失败
@@ -150,7 +150,7 @@ public:
 
 private:
 
-	void innerRun(_In_ const std::shared_ptr<MvpImage>& img, _In_ std::string runFromBlockID, _In_ std::string runToBlockID);
+	void innerRun(_In_ std::shared_ptr<MvpImage> img, _In_ std::string runFromBlockID, _In_ std::string runToBlockID);
 
 private:
 	std::string	BLOCK_TYPE = "NormalBlock";		// block type

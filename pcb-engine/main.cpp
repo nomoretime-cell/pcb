@@ -32,16 +32,35 @@ Engine::LinkItem getLinkItem(std::string inparam) {
 
 int main()
 {
-    std::async(std::launch::async, [=]() {}).wait();
+    std::string NormalBlock1 = Engine::Manager::instance()->addBlock("NormalBlock");
+    std::string VisionToolMock1 = Engine::Manager::instance()->addNode(NormalBlock1, "VisionToolMock2");
 
-    std::string blockID = Engine::Manager::instance()->addBlock("NormalBlock");
-    std::string nodeID = Engine::Manager::instance()->addNode(blockID, "VisionToolMock");
-    std::string nodeID2 = Engine::Manager::instance()->addNode(blockID, "VisionToolMock");
-    Engine::Manager::instance()->run(nullptr);
+    std::string NormalBlock2 = Engine::Manager::instance()->addBlock("NormalBlock");
+    std::string VisionToolMock2 = Engine::Manager::instance()->addNode(NormalBlock2, "VisionToolMock");
+    std::string VisionToolMock3 = Engine::Manager::instance()->addNode(NormalBlock2, "VisionToolMock");
+    
+    std::string NormalBlock3 = Engine::Manager::instance()->addBlock("NormalBlock");
+    std::string VisionToolMock4 = Engine::Manager::instance()->addNode(NormalBlock3, "VisionToolMock");
 
-    std::string str = "{\"fromNodeID\": \"1\", \"fromParam\" : \"2\",\"toNodeID\" : \"3\", \"toParam\" : \"4\"}";
+    std::string NormalBlock4 = Engine::Manager::instance()->addBlock("NormalBlock");
+    std::string VisionToolMoc5 = Engine::Manager::instance()->addNode(NormalBlock4, "VisionToolMock");
+
+    std::string str = "{\"fromNodeID\": \"VisionToolMock3\", \"fromParam\" : \"2\",\"toNodeID\" : \"VisionToolMock4\", \"toParam\" : \"4\"}";
     Engine::LinkItem link = Engine::LinkItem::getLinkItem(str);
+    Engine::Manager::instance()->addLink(str);
+
+    std::shared_ptr<MvpImage> image = std::make_shared<MvpImage>();
+    Engine::Manager::instance()->runOnce(image);
+    Engine::Manager::instance()->runOnce(image, NormalBlock3, NormalBlock4);
+    Engine::Manager::instance()->run(image, NormalBlock2);
+    //Engine::Manager::instance()->run(nullptr);
+
+
     std::cout << "Hello World!\n";
+
+    while (true) {
+
+    }
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

@@ -12,6 +12,9 @@
 // 输出参数
 #define _Out_
 
+// 输入输出参数
+#define _InOut_
+
 struct MvpImage
 {
 	int	width;

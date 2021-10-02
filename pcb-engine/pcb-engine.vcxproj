@@ -143,7 +143,7 @@
     <ClCompile Include="Manager.cpp" />
     <ClCompile Include="NormalBlock.cpp" />
     <ClCompile Include="NormalBlockFactory.cpp" />
-    <ClCompile Include="VisionToolMock2.cpp" />
+    <ClCompile Include="VisionToolMock2.hpp" />
     <ClCompile Include="VisionToolNodeFactory.cpp" />
   </ItemGroup>
   <ItemGroup>

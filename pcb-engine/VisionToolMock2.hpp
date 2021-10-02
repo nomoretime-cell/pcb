@@ -25,7 +25,7 @@ public:
 		}
 
 		const char* clsid() const override {
-			return "VisionToolMock";
+			return "VisionToolMock2";
 		}
 	};
 
@@ -48,7 +48,11 @@ public:
 
 	virtual bool uninit() override { return true; };
 
-	virtual bool process(const std::shared_ptr<MvpImage>& img, const std::string& inParam, std::string& outParam) override { return true; };
+	virtual bool process(std::shared_ptr<MvpImage> img, const std::string& inParam, std::string& outParam) override {
+		img->height = 100;
+		img->width = 200;
+		return true; 
+	};
 
 	virtual bool setConfig(const std::string& cfgList) override { return true; };
 

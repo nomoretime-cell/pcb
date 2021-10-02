@@ -51,7 +51,7 @@ public:
 
 	virtual std::string getConfig(_In_ const std::string& nodeID) override;
 
-	virtual bool process(_In_ const std::shared_ptr<MvpImage>& img, _In_ std::map<std::string, std::string>& nodeMapInJson, _Out_ std::map<std::string, std::string>& nodeMapOutJson) override;
+	virtual bool process(_InOut_ std::shared_ptr<MvpImage> img, _In_ std::map<std::string, std::string>& nodeMapInJson, _Out_ std::map<std::string, std::string>& nodeMapOutJson) override;
 
 	virtual bool command(_In_ const std::string& nodeID, _In_ const std::string& cmd, _In_ const std::shared_ptr<MvpImage>& img, _In_ const std::string& inJson, _Out_ std::string& outJson)override;
 
@@ -77,6 +77,8 @@ public:
 	virtual bool addLink(_In_ const LinkItem& link) override;
 
 	virtual bool deleteLink(_In_ const LinkItem& link) override;
+
+	virtual void clearResult() override;
 
 private:
 

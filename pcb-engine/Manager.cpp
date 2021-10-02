@@ -75,44 +75,59 @@ std::string Manager::getConfig(_In_ const std::string& nodeID) {
 	return "";
 }
 
-bool Manager::run(_In_ const std::shared_ptr<MvpImage>& img, _In_ std::string runFromBlockID) {
+bool Manager::run(_In_ std::shared_ptr<MvpImage> img, _In_ std::string runFromBlockID) {
+	if (m_running) {
+		// 程序运行中
+		return false;
+	}
 	m_running = true;
 	m_runThread = std::thread(std::bind(&Manager::innerRun, this, img, runFromBlockID, ""));
 	return true;
 }
 
-bool Manager::runOnce(_In_ const std::shared_ptr<MvpImage>& img, _In_ std::string runFromBlockID, _In_ std::string runToBlockID) {
+bool Manager::runOnce(_In_ std::shared_ptr<MvpImage> img, _In_ std::string runFromBlockID, _In_ std::string runToBlockID) {
 	m_running = false;
 	m_runThread = std::thread(std::bind(&Manager::innerRun, this, img, runFromBlockID, runToBlockID));
+	m_runThread.join();
 	return true;
 }
 
-void Manager::innerRun(_In_ const std::shared_ptr<MvpImage>& img, _In_ std::string runFromBlockID, _In_ std::string runToBlockID) {
-	// key：node id， value：node结果
-	// nodeMapInJson 上一个block中所有node的结果
-	std::map<std::string, std::string> nodeMapInJson;
-	// nodeMapOutJson 当前block中所有node的结果
-	std::map<std::string, std::string> nodeMapOutJson;
-	bool isRunning = false;
+void Manager::innerRun(_In_ std::shared_ptr<MvpImage> img, _In_ std::string runFromBlockID, _In_ std::string runToBlockID) {
+	bool isBlockRun = false;
 	do {
+		bool isBlockRunFromFirst = true;
 		for (const auto& blockInfo : m_vecBlockInfos) {
-			if (!isRunning 
-				&& runFromBlockID != "" 
-				&& blockInfo.blockId != runFromBlockID) {
+			if (!isBlockRun && runFromBlockID != "" && blockInfo.blockId != runFromBlockID) {
+				isBlockRunFromFirst = false;
 				continue;
 			}
-			isRunning = true;
-			// 将上一个block中所有node结果，作为下一个block的输入
-			nodeMapInJson = nodeMapOutJson;
-			// 对当前block的所有node结果进行清空
-			nodeMapOutJson = std::map<std::string, std::string>();
-			if (!blockInfo.ptr->process(img, nodeMapInJson, nodeMapOutJson))
-			{
+			isBlockRun = true;
+			if (isBlockRunFromFirst) {
+				isBlockRunFromFirst = false;
+				for (const auto& blockInfo : m_vecBlockInfos) {
+					// 清空历史结果（是否要在第一次进来清空所有block结果）
+					//blockInfo.ptr->clearResult();
+				}
+			}
+
+			// 获取当前block之前所有block中所有node结果
+			std::map<std::string, std::string> nodeMapInJson;
+			for (const auto& block : m_vecBlockInfos) {
+				if (block.blockId == blockInfo.blockId) {
+					break;
+				}
+				for (const auto& nodeResult : block.ptr->getAllNodeResult()) {
+					nodeMapInJson.insert(nodeResult);
+				}
+			}
+
+			// block处理函数
+			std::map<std::string, std::string> nodeMapOutJson = std::map<std::string, std::string>();
+			if (!blockInfo.ptr->process(img, nodeMapInJson, nodeMapOutJson)){
 				break;
 			}
 
-			if (isRunning 
-				&& runToBlockID == blockInfo.blockId) {
+			if (isBlockRun && runToBlockID == blockInfo.blockId) {
 				break;
 			}
 		}

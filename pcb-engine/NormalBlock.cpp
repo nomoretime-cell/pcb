@@ -7,12 +7,14 @@
 #include "NormalBlock.h"
 #include "VisionToolNodeFactory.h"
 #include "VisionToolMock.hpp"
+#include "VisionToolMock2.hpp"
 
 ENGINE_NAMESPACE_BEGIN
 
 // 注册 NormalBlock 对象
 static NormalBlock::NormalEngineBlockFactory registerBlock;
 static VisionTool::VisionToolMock::VisionToolMockFactory registerVisionTool;
+static VisionTool::VisionToolMock2::VisionToolMockFactory registerVisionTool2;
 
 NormalBlock::NormalBlock(int blockId) {
 	m_blockID = "NormalBlock" + std::to_string(blockId);	
@@ -98,7 +100,7 @@ std::string NormalBlock::getConfig(_In_ const std::string& nodeID) {
 	}
 }
 
-bool NormalBlock::process(_In_ const std::shared_ptr<MvpImage>& img, _In_ std::map<std::string, std::string>& nodeMapInJson, _Out_ std::map<std::string, std::string>& nodeMapOutJson) {
+bool NormalBlock::process(_InOut_ std::shared_ptr<MvpImage> img, _In_ std::map<std::string, std::string>& nodeMapInJson, _Out_ std::map<std::string, std::string>& nodeMapOutJson) {
 	// 算子并行计算
 	std::shared_ptr<std::atomic<bool>> runningState =std::make_shared<std::atomic<bool>>(true);
 	std::map<std::string, std::shared_future<std::string>> nodeIdMapFuture;
@@ -134,6 +136,7 @@ bool NormalBlock::process(_In_ const std::shared_ptr<MvpImage>& img, _In_ std::m
 	}
 
 	// 等待所有并行算子结束运行
+	m_nodeIDMapResult.clear();
 	for (const std::pair<std::string, std::shared_future<std::string>> f : nodeIdMapFuture) {
 		std::string nodeId = f.first;
 		std::shared_future<std::string> future = f.second;
@@ -193,7 +196,7 @@ std::string NormalBlock::addNode(_In_ const std::string& nodeType) {
 	if (node == nullptr) {
 		return "";
 	}
-	std::string strNodeid = m_blockType + std::to_string(nodeId);
+	std::string strNodeid = nodeType + std::to_string(nodeId);
 	m_nodeIDMapNodePtr.insert(std::pair<std::string, std::shared_ptr<VisionTool::IVisionTool>>(strNodeid, node));
 	return strNodeid;
 }
@@ -253,6 +256,10 @@ bool NormalBlock::deleteLink(_In_ const LinkItem& link) {
 	}
 
 	return false;
+}
+
+void NormalBlock::clearResult() {
+	m_nodeIDMapResult.clear();
 }
 
 std::string NormalBlock::getFromNodeID(_In_ const std::string& thisNodeId) {

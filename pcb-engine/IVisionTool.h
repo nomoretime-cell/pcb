@@ -60,7 +60,7 @@ public:
 	/// \param[in]  inParam  输入参数
 	/// \param[out] outParam 输出参数
 	/// \retval     true 成功   false 失败
-	virtual bool process(const std::shared_ptr<MvpImage>& img, const std::string& inParam, std::string& outParam) = 0;
+	virtual bool process(std::shared_ptr<MvpImage> img, const std::string& inParam, std::string& outParam) = 0;
 
 	/// \brief 配置设置
 	/// \param[in] cfgList 配置

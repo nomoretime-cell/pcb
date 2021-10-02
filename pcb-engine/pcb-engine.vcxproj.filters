@@ -32,7 +32,7 @@
       <Filter>Lib</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="VisionToolMock2.cpp">
+    <ClCompile Include="VisionToolMock2.hpp">
       <Filter>VisionTool</Filter>
     </ClCompile>
   </ItemGroup>
