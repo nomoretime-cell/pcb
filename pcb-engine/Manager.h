@@ -4,6 +4,7 @@
 #include <list>
 #include <string>
 #include <atomic>
+#include <thread>
 #include "Defs.h"
 #include "IBlock.h"
 

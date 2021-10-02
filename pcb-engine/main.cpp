@@ -8,8 +8,16 @@
 // block和平台算子之间接口
 
 #include <iostream>
+#include <vector>
+#include <algorithm>
+#include <numeric>
+#include <future>
+#include <string>
+#include <mutex>
 #include "json.hpp"
 #include "IBlock.h"
+#include "Defs.h"
+#include "Manager.h"
 
 Engine::LinkItem getLinkItem(std::string inparam) {
     nlohmann::json jObj = nlohmann::json::parse(inparam);
@@ -24,6 +32,13 @@ Engine::LinkItem getLinkItem(std::string inparam) {
 
 int main()
 {
+    std::async(std::launch::async, [=]() {}).wait();
+
+    std::string blockID = Engine::Manager::instance()->addBlock("NormalBlock");
+    std::string nodeID = Engine::Manager::instance()->addNode(blockID, "VisionToolMock");
+    std::string nodeID2 = Engine::Manager::instance()->addNode(blockID, "VisionToolMock");
+    Engine::Manager::instance()->run(nullptr);
+
     std::string str = "{\"fromNodeID\": \"1\", \"fromParam\" : \"2\",\"toNodeID\" : \"3\", \"toParam\" : \"4\"}";
     Engine::LinkItem link = Engine::LinkItem::getLinkItem(str);
     std::cout << "Hello World!\n";

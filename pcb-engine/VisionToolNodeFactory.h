@@ -9,7 +9,7 @@ class VisionToolNodeFactory
 {
 public:
 	static std::shared_ptr<IVisionTool> createNode(std::string toolID, int32_t nodeID) {
-		return VisionToolNodeFactory::instance()->createNode(toolID, nodeID);
+		return VisionToolNodeFactory::instance()->innerCreateNode(toolID, nodeID);
 	}
 
 private:

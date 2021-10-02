@@ -1,3 +1,4 @@
+#include <iostream>
 #include <memory>
 #include <thread>
 #include <future>
@@ -5,14 +6,16 @@
 #include <vector>
 #include "NormalBlock.h"
 #include "VisionToolNodeFactory.h"
+#include "VisionToolMock.hpp"
 
 ENGINE_NAMESPACE_BEGIN
 
 // 注册 NormalBlock 对象
 static NormalBlock::NormalEngineBlockFactory registerBlock;
+static VisionTool::VisionToolMock::VisionToolMockFactory registerVisionTool;
 
 NormalBlock::NormalBlock(int blockId) {
-	m_blockID = "NormalBlock" + std::to_string(blockId);
+	m_blockID = "NormalBlock" + std::to_string(blockId);	
 }
 
 NormalBlock::~NormalBlock() {
@@ -98,10 +101,10 @@ std::string NormalBlock::getConfig(_In_ const std::string& nodeID) {
 bool NormalBlock::process(_In_ const std::shared_ptr<MvpImage>& img, _In_ std::map<std::string, std::string>& nodeMapInJson, _Out_ std::map<std::string, std::string>& nodeMapOutJson) {
 	// 算子并行计算
 	std::shared_ptr<std::atomic<bool>> runningState =std::make_shared<std::atomic<bool>>(true);
-	std::map<std::string, std::future<std::string>&> nodeIdMapFuture;
+	std::map<std::string, std::shared_future<std::string>> nodeIdMapFuture;
 	for (const auto& node : m_nodeIDMapNodePtr) {
 		std::string thisNodeId = node.first;
-		auto		thisNodePtr = node.second;
+		auto thisNodePtr = node.second;
 		std::string thisNodeResult;
 
 		std::string lastNodeId = getFromNodeID(thisNodeId);
@@ -120,20 +123,20 @@ bool NormalBlock::process(_In_ const std::shared_ptr<MvpImage>& img, _In_ std::m
 			lastNodeResult = lastNodePair->second;
 		}
 
-		std::future<std::string> future = std::async(std::launch::async, [=] {
+		std::shared_future<std::string> future = std::async(std::launch::async, [=] () {
 			std::string result;
 			bool state = thisNodePtr->process(img, lastNodeResult, result);
 			runningState->store(runningState->load() && state);
 			return result;
-			});
+			}).share();
 
-		nodeIdMapFuture.emplace(std::pair<std::string, std::future<std::string>&>(thisNodeId, future));
+		nodeIdMapFuture.emplace(std::pair<std::string, std::shared_future<std::string>>(thisNodeId, future));
 	}
 
 	// 等待所有并行算子结束运行
-	for (const std::pair<std::string, std::future<std::string>&> f : nodeIdMapFuture) {
+	for (const std::pair<std::string, std::shared_future<std::string>> f : nodeIdMapFuture) {
 		std::string nodeId = f.first;
-		std::future<std::string>& future = f.second;
+		std::shared_future<std::string> future = f.second;
 		std::string nodeResult = future.get();
 		m_nodeIDMapResult.insert(std::pair<std::string, std::string>(nodeId, nodeResult));
 	}

@@ -33,3 +33,5 @@
 pcb-engine/Debug/
 .vs/pcb/
 Debug/
+pcb-engine/Release/
+Release/

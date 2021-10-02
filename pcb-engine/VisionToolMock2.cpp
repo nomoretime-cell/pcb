@@ -6,9 +6,9 @@
 
 VISIONTOOL_NAMESPACE_BEGIN
 
-class VisionToolMock : IVisionTool
+class VisionToolMock2 : IVisionTool
 {
-public: 
+public:
 	class VisionToolMockFactory : public IVisionTool::IFactory
 	{
 	public:
@@ -20,8 +20,8 @@ public:
 			unregisterFactory();
 		}
 
-		VisionToolMock* create(int nodeId) override {
-			return new VisionToolMock();
+		VisionToolMock2* create(int nodeId) override {
+			return new VisionToolMock2();
 		}
 
 		const char* clsid() const override {
@@ -31,10 +31,10 @@ public:
 
 
 public:
-	VisionToolMock() {};
-	~VisionToolMock() {};
+	VisionToolMock2() {};
+	~VisionToolMock2() {};
 
-	virtual void destroy() override {delete this;};
+	virtual void destroy() override { delete this; };
 
 	virtual bool getToolID(std::string& id) const override { return true; };
 

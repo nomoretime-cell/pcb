@@ -32,6 +32,9 @@
       <Filter>Lib</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="VisionToolMock2.cpp">
+      <Filter>VisionTool</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Defs.h" />
