@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <string>
+#include <thread>
 #include "Defs.h"
 #include "IVisionTool.h"
 
@@ -47,13 +48,21 @@ public:
 
 	virtual bool setInputParam(const std::string& inputList) override { return true; };
 
-	virtual bool init(const std::shared_ptr<MvpImage>& img, const std::string& inputList) override { return true; };
+	virtual bool init(const std::shared_ptr<MvpImage>& img, const std::string& inputList) override { 
+		return true; 
+	};
 
 	virtual bool uninit() override { return true; };
 
 	virtual bool process(std::shared_ptr<MvpImage> img, const std::string& inParam, std::string& outParam) override { 
+		std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 		outParam = m_nodeID;
-		return true; 
+		if (m_nodeID == "3") {
+			return true;
+		}
+		else {
+			return true;
+		}
 	}
 
 	virtual bool setConfig(const std::string& cfgList) override { return true; };

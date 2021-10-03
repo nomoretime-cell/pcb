@@ -99,7 +99,7 @@ bool Manager::detachResultCallback() {
 bool Manager::runOnce(_In_ std::shared_ptr<MvpImage> img, _In_ std::string runFromBlockID, _In_ std::string runToBlockID) {
 	m_running = false;
 	m_runThread = std::thread(std::bind(&Manager::innerRun, this, img, runFromBlockID, runToBlockID));
-	m_runThread.join();
+	//m_runThread.join();
 	return true;
 }
 

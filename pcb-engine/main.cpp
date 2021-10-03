@@ -31,8 +31,9 @@ Engine::LinkItem getLinkItem(std::string inparam) {
 }
 
 void resultCallback(std::map<std::string, std::map<std::string, std::string>> result) {
-    std::map<std::string, std::map<std::string, std::string>> r = result;
-    std::cout << "Get Result!\n";
+    nlohmann::json jResult(result);
+    std::string strResult = jResult.dump();
+    std::cout << "Get Result:\n" + strResult;
 }
 
 int main()
@@ -43,7 +44,7 @@ int main()
     std::string NormalBlock2 = Engine::Manager::instance()->addBlock("NormalBlock");
     std::string VisionToolMock2 = Engine::Manager::instance()->addNode(NormalBlock2, "VisionToolMock");
     std::string VisionToolMock3 = Engine::Manager::instance()->addNode(NormalBlock2, "VisionToolMock");
-    
+
     std::string NormalBlock3 = Engine::Manager::instance()->addBlock("NormalBlock");
     std::string VisionToolMock4 = Engine::Manager::instance()->addNode(NormalBlock3, "VisionToolMock");
 
@@ -57,21 +58,32 @@ int main()
 
     // 设置回调
     Engine::Manager::instance()->attachResultCallback(resultCallback);
-    Engine::Manager::instance()->detachResultCallback();
+    //Engine::Manager::instance()->detachResultCallback();
 
+    // 运行
     std::shared_ptr<MvpImage> image = std::make_shared<MvpImage>();
     Engine::Manager::instance()->runOnce(image);
-    Engine::Manager::instance()->runOnce(image, NormalBlock3, NormalBlock4);
+    //Engine::Manager::instance()->runOnce(image, NormalBlock3, NormalBlock4);
 
-    Engine::Manager::instance()->attachResultCallback(resultCallback);
-    Engine::Manager::instance()->run(image, NormalBlock2);
+    //Engine::Manager::instance()->attachResultCallback(resultCallback);
+    //Engine::Manager::instance()->run(image, NormalBlock2);
     //Engine::Manager::instance()->run(nullptr);
 
+
+    // manager相关接口测试
+    // initBlock initNode
+    std::map<std::string, std::string> node2Config;
+    node2Config.insert(std::pair<std::string, std::string>("VisionToolMock2", "VisionToolMock2's config"));
+    //node2Config.insert(std::pair<std::string, std::string>("VisionToolMock3", "VisionToolMock3's config"));
+    Engine::Manager::instance()->initBlock("NormalBlock2", nullptr, node2Config);
+    Engine::Manager::instance()->initNode("VisionToolMock2", nullptr, "initNode VisionToolMock2's config");
+
+    // 获取结果
 
     std::cout << "Hello World!\n";
 
     while (true) {
-
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
 }
 
