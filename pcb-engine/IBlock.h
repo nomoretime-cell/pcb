@@ -66,6 +66,11 @@ public:
 	/// \param[in]	inputJson		输入参数
 	/// \retval		true  成功   false 失败
 	virtual bool setInput(_In_ const std::string& nodeID, _In_ const std::string& inputJson) = 0;
+
+	/// \brief	获取算子输入参数
+	/// \param[in]	nodeID			nodeid
+	/// \retval		输入参数
+	virtual std::string getInput(_In_ const std::string& nodeID) = 0;
 	
 	/// \brief	设置算子配置参数
 	/// \param[in]	nodeID			nodeid

@@ -63,6 +63,16 @@ bool NormalBlock::setInput(_In_ const std::string& nodeID, _In_ const std::strin
 	}
 }
 
+std::string NormalBlock::getInput(_In_ const std::string& nodeID) {
+	auto nodePtr = m_nodeIDMapInput.find(nodeID);
+	if (nodePtr != m_nodeIDMapInput.end()) {
+		return nodePtr->second;
+	}
+	else {
+		return "";
+	}
+}
+
 bool NormalBlock::setConfig(_In_ const std::string& nodeID, _In_ const std::string& configJson) {
 	auto node = m_nodeIDMapNodePtr.find(nodeID);
 	if (node != m_nodeIDMapNodePtr.end()) {
@@ -109,25 +119,38 @@ bool NormalBlock::process(_InOut_ std::shared_ptr<MvpImage> img, _In_ std::map<s
 		auto thisNodePtr = node.second;
 		std::string thisNodeResult;
 
-		std::string lastNodeId = getFromNodeID(thisNodeId);
-		std::string lastNodeResult = "";
+		std::list <std::string> lastNodeIds = getFromNodeID(thisNodeId);
+		std::string lastNodeResults = "";
 
-		if (lastNodeId == "") {
-			// thisNode是第一个算子
-		}
-		else {
-			// thisNode有被连为输入算子
-			auto lastNodePair = nodeMapInJson.find(lastNodeId);
-			if (lastNodePair == nodeMapInJson.end()) {
-				// error 有连线，但是id对应的算子指针为空
-				continue;
+		if (lastNodeIds.size() < 1) {
+			// 无输入算子
+		} else {
+			nlohmann::json jResult = nullptr;
+			for (const auto& nodeID : lastNodeIds) {
+				// 遍历输入算子
+				auto pair = nodeMapInJson.find(nodeID);
+				if (pair == nodeMapInJson.end()) {
+					// error 被连线的输入算子指针为空
+					continue;
+				}
+				jResult[nodeID] = nlohmann::json::parse(pair->second);
 			}
-			lastNodeResult = lastNodePair->second;
+			if (jResult != nullptr) {
+				lastNodeResults = jResult.dump();
+			}
 		}
 
+		// 缓存输入
+		auto item = m_nodeIDMapInput.find(node.first);
+		if (item != m_nodeIDMapInput.end()) {
+			m_nodeIDMapInput.erase(item);
+		}
+		m_nodeIDMapInput.insert(std::pair<std::string, std::string>(node.first, lastNodeResults));
+
+		// 运行
 		std::shared_future<std::string> future = std::async(std::launch::async, [=] () {
 			std::string result;
-			bool state = thisNodePtr->process(img, lastNodeResult, result);
+			bool state = thisNodePtr->process(img, lastNodeResults, result);
 			runningState->store(runningState->load() && state);
 			return result;
 			}).share();
@@ -262,13 +285,14 @@ void NormalBlock::clearResult() {
 	m_nodeIDMapResult.clear();
 }
 
-std::string NormalBlock::getFromNodeID(_In_ const std::string& thisNodeId) {
+std::list<std::string> NormalBlock::getFromNodeID(_In_ const std::string& thisNodeId) {
+	std::list<std::string> result;
 	for (const auto& link: m_links) {
 		if (link.toNodeID == thisNodeId) {
-			return link.fromNodeID;
+			result.emplace_back(link.fromNodeID);
 		}
 	}
-	return "";
+	return result;
 }
 
 ENGINE_NAMESPACE_END

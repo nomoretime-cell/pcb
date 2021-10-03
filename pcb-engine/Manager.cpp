@@ -49,6 +49,15 @@ bool Manager::setInput(_In_ const std::string& nodeID, _In_ const std::string& i
 	return false;
 }
 
+std::string Manager::getInput(_In_ const std::string& nodeID) {
+	for (const auto& blockInfo : m_vecBlockInfos) {
+		if (blockInfo.ptr->hasNode(nodeID)) {
+			return blockInfo.ptr->getInput(nodeID);
+		}
+	}
+	return "";
+}
+
 bool Manager::setConfig(_In_ const std::string& nodeID, _In_ const std::string& configJson) {
 	for (const auto& blockInfo : m_vecBlockInfos) {
 		if (blockInfo.ptr->hasNode(nodeID)) {

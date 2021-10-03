@@ -30,10 +30,13 @@ Engine::LinkItem getLinkItem(std::string inparam) {
     return linkItem;
 }
 
+static bool isFinish = false;
+
 void resultCallback(std::map<std::string, std::map<std::string, std::string>> result) {
     nlohmann::json jResult(result);
     std::string strResult = jResult.dump();
     std::cout << "Get Result:\n" + strResult;
+    isFinish = true;
 }
 
 int main()
@@ -52,9 +55,13 @@ int main()
     std::string VisionToolMoc5 = Engine::Manager::instance()->addNode(NormalBlock4, "VisionToolMock");
 
     // 连线
-    std::string str = "{\"fromNodeID\": \"VisionToolMock3\", \"fromParam\" : \"2\",\"toNodeID\" : \"VisionToolMock4\", \"toParam\" : \"4\"}";
-    Engine::LinkItem link = Engine::LinkItem::getLinkItem(str);
-    Engine::Manager::instance()->addLink(str);
+    std::string from1to2 = "{\"fromNodeID\": \"VisionToolMock1\", \"fromParam\" : \"1\",\"toNodeID\" : \"VisionToolMock2\", \"toParam\" : \"2\"}";
+    std::string from2to4 = "{\"fromNodeID\": \"VisionToolMock2\", \"fromParam\" : \"2\",\"toNodeID\" : \"VisionToolMock4\", \"toParam\" : \"4\"}";
+    std::string from3to4 = "{\"fromNodeID\": \"VisionToolMock3\", \"fromParam\" : \"3\",\"toNodeID\" : \"VisionToolMock4\", \"toParam\" : \"4\"}";
+    Engine::LinkItem link = Engine::LinkItem::getLinkItem(from2to4);
+    Engine::Manager::instance()->addLink(from1to2);
+    Engine::Manager::instance()->addLink(from2to4);
+    Engine::Manager::instance()->addLink(from3to4);
 
     // 设置回调
     Engine::Manager::instance()->attachResultCallback(resultCallback);
@@ -69,6 +76,10 @@ int main()
     //Engine::Manager::instance()->run(image, NormalBlock2);
     //Engine::Manager::instance()->run(nullptr);
 
+    while (!isFinish) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    }
+    std::string input = Engine::Manager::instance()->getInput("VisionToolMock4");
 
     // manager相关接口测试
     // initBlock initNode
@@ -78,6 +89,12 @@ int main()
     Engine::Manager::instance()->initBlock("NormalBlock2", nullptr, node2Config);
     Engine::Manager::instance()->initNode("VisionToolMock2", nullptr, "initNode VisionToolMock2's config");
 
+    Engine::Manager::instance()->setInput("VisionToolMock2", "setInput VisionToolMock2's config");
+
+    Engine::Manager::instance()->setConfig("VisionToolMock2", "setConfig VisionToolMock2's config");
+    std::string config = Engine::Manager::instance()->getConfig("VisionToolMock2");
+
+    //Engine::Manager::instance()->setOutput("VisionToolMock2", "initNode VisionToolMock2's config");
     // 获取结果
 
     std::cout << "Hello World!\n";

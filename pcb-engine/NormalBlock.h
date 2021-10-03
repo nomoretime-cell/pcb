@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <list>
 #include "Defs.h"
 #include "IBlock.h"
 #include "IVisionTool.h"
@@ -45,6 +46,8 @@ public:
 
 	virtual bool setInput(_In_ const std::string& nodeID, _In_ const std::string& inputJson) override;
 
+	virtual std::string getInput(_In_ const std::string& nodeID) override;
+
 	virtual bool setConfig(_In_ const std::string& nodeID, _In_ const std::string& configJson) override;
 
 	virtual bool setOutput(_In_ const std::string& nodeID, _In_ const std::string& resultJson) override;
@@ -82,13 +85,14 @@ public:
 
 private:
 
-	std::string getFromNodeID(_In_ const std::string& thisNodeId);
+	std::list<std::string> getFromNodeID(_In_ const std::string& thisNodeId);
 
 private:
 	std::string	m_blockType = "NormalBlock";										///< block type
 	std::string	m_blockID;																///< block id
 	std::map<std::string, std::shared_ptr<VisionTool::IVisionTool>>	m_nodeIDMapNodePtr;	///< 算子
 	std::map<std::string, std::string> m_nodeIDMapResult;								///< 算子结果
+	std::map<std::string, std::string> m_nodeIDMapInput;								///< 算子输入
 	std::vector<LinkItem> m_links;														///< 连接关系
 };
 

@@ -48,6 +48,11 @@ public:
 	/// \retval 在所有block无nodeid对应node对象
 	bool setInput(_In_ const std::string& nodeID, _In_ const std::string& inputJson);
 
+	/// \brief 获取算子输入参数
+	/// \param[in] nodeID nodeid
+	/// \retval 输入参数
+	std::string getInput(_In_ const std::string& nodeID);
+
 	/// \brief 设置算子配置参数
 	/// \param[in] nodeID nodeid
 	/// \param[in] configJson 输入参数
