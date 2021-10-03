@@ -14,6 +14,7 @@ Manager::Manager()
 {
 	m_running = false;
 	m_blockIndex = 0;
+	m_resultCallback = nullptr;
 }
 
 Manager::~Manager()
@@ -85,6 +86,16 @@ bool Manager::run(_In_ std::shared_ptr<MvpImage> img, _In_ std::string runFromBl
 	return true;
 }
 
+bool Manager::attachResultCallback(std::function<void(std::map<std::string, std::map<std::string, std::string>>)> func) {
+	m_resultCallback = func;
+	return true;
+}
+
+bool Manager::detachResultCallback() {
+	m_resultCallback = nullptr;
+	return true;
+}
+
 bool Manager::runOnce(_In_ std::shared_ptr<MvpImage> img, _In_ std::string runFromBlockID, _In_ std::string runToBlockID) {
 	m_running = false;
 	m_runThread = std::thread(std::bind(&Manager::innerRun, this, img, runFromBlockID, runToBlockID));
@@ -123,13 +134,24 @@ void Manager::innerRun(_In_ std::shared_ptr<MvpImage> img, _In_ std::string runF
 
 			// block处理函数
 			std::map<std::string, std::string> nodeMapOutJson = std::map<std::string, std::string>();
-			if (!blockInfo.ptr->process(img, nodeMapInJson, nodeMapOutJson)){
+			if (!blockInfo.ptr->process(img, nodeMapInJson, nodeMapOutJson)) {
 				break;
 			}
 
 			if (isBlockRun && runToBlockID == blockInfo.blockId) {
 				break;
 			}
+		}
+
+		if (m_resultCallback != nullptr) {
+			// 获取结果
+			std::map<std::string, std::map<std::string, std::string>> result;
+			for (const auto& blockInfo : m_vecBlockInfos) {
+				std::string blockID = blockInfo.blockId;
+				std::map<std::string, std::string> blockResult = blockInfo.ptr->getAllNodeResult();
+				result.insert(std::pair<std::string, std::map<std::string, std::string>>(blockID, blockResult));
+			}
+			m_resultCallback(result);
 		}
 	} while (m_running);
 }

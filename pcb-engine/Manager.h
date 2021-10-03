@@ -5,6 +5,7 @@
 #include <string>
 #include <atomic>
 #include <thread>
+#include <functional>
 #include "Defs.h"
 #include "IBlock.h"
 
@@ -70,6 +71,16 @@ public:
 	/// \param[in] runToBlockID 结束block id
 	/// \retval true 成功 false 失败
 	bool run(_In_ std::shared_ptr<MvpImage> img, _In_ std::string runFromBlockID = "");
+
+	/// \brief 注册结果回调（第一层key是blockID, value map中的key是nodeID,value是nodeID对应的result）
+	/// \param[in] func 回调函数
+	/// \retval true 成功 false 失败
+	bool attachResultCallback(std::function<void(std::map<std::string, std::map<std::string, std::string>>)> func);
+
+	/// \brief  取消注册结果回调
+	/// \param[in] func 回调函数
+	/// \retval true 成功 false 失败
+	bool detachResultCallback();
 
 	/// \brief 运行一次
 	/// \param[in] img 图像指针
@@ -158,6 +169,7 @@ private:
 	std::vector<BlockInfo> m_vecBlockInfos;		// block 数组
 	std::atomic<bool> m_running;				// 流程运行状态
 	std::thread m_runThread;					// 运行线程
+	std::function<void(std::map<std::string, std::map<std::string, std::string>>)>	m_resultCallback;	// 结果回调
 };
 
 ENGINE_NAMESPACE_END

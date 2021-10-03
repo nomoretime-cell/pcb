@@ -30,6 +30,11 @@ Engine::LinkItem getLinkItem(std::string inparam) {
     return linkItem;
 }
 
+void resultCallback(std::map<std::string, std::map<std::string, std::string>> result) {
+    std::map<std::string, std::map<std::string, std::string>> r = result;
+    std::cout << "Get Result!\n";
+}
+
 int main()
 {
     std::string NormalBlock1 = Engine::Manager::instance()->addBlock("NormalBlock");
@@ -45,13 +50,20 @@ int main()
     std::string NormalBlock4 = Engine::Manager::instance()->addBlock("NormalBlock");
     std::string VisionToolMoc5 = Engine::Manager::instance()->addNode(NormalBlock4, "VisionToolMock");
 
+    // 连线
     std::string str = "{\"fromNodeID\": \"VisionToolMock3\", \"fromParam\" : \"2\",\"toNodeID\" : \"VisionToolMock4\", \"toParam\" : \"4\"}";
     Engine::LinkItem link = Engine::LinkItem::getLinkItem(str);
     Engine::Manager::instance()->addLink(str);
 
+    // 设置回调
+    Engine::Manager::instance()->attachResultCallback(resultCallback);
+    Engine::Manager::instance()->detachResultCallback();
+
     std::shared_ptr<MvpImage> image = std::make_shared<MvpImage>();
     Engine::Manager::instance()->runOnce(image);
     Engine::Manager::instance()->runOnce(image, NormalBlock3, NormalBlock4);
+
+    Engine::Manager::instance()->attachResultCallback(resultCallback);
     Engine::Manager::instance()->run(image, NormalBlock2);
     //Engine::Manager::instance()->run(nullptr);
 
