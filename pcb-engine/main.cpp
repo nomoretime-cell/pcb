@@ -33,14 +33,21 @@ Engine::LinkItem getLinkItem(std::string inparam) {
 static bool isFinish = false;
 
 void resultCallback(std::map<std::string, std::map<std::string, std::string>> result) {
+    isFinish = true;
     nlohmann::json jResult(result);
     std::string strResult = jResult.dump();
     std::cout << "Get Result:\n" + strResult;
-    isFinish = true;
 }
 
 int main()
 {
+    std::vector<std::string> vec;
+    vec.emplace_back("y");
+    vec.emplace_back("e");
+    vec.emplace_back("j");
+    nlohmann::json j_vec(vec);
+    std::string v = j_vec.dump();
+
     std::string NormalBlock1 = Engine::Manager::instance()->addBlock("NormalBlock");
     std::string VisionToolMock1 = Engine::Manager::instance()->addNode(NormalBlock1, "VisionToolMock2");
 
@@ -61,6 +68,7 @@ int main()
     Engine::LinkItem link = Engine::LinkItem::getLinkItem(from2to4);
     Engine::Manager::instance()->addLink(from1to2);
     Engine::Manager::instance()->addLink(from2to4);
+    Engine::Manager::instance()->deleteLink(from2to4);
     Engine::Manager::instance()->addLink(from3to4);
 
     // 设置回调
@@ -79,10 +87,10 @@ int main()
     while (!isFinish) {
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
+
+    // 获取输入
     std::string input = Engine::Manager::instance()->getInput("VisionToolMock4");
 
-    // manager相关接口测试
-    // initBlock initNode
     std::map<std::string, std::string> node2Config;
     node2Config.insert(std::pair<std::string, std::string>("VisionToolMock2", "VisionToolMock2's config"));
     //node2Config.insert(std::pair<std::string, std::string>("VisionToolMock3", "VisionToolMock3's config"));
@@ -94,8 +102,8 @@ int main()
     Engine::Manager::instance()->setConfig("VisionToolMock2", "setConfig VisionToolMock2's config");
     std::string config = Engine::Manager::instance()->getConfig("VisionToolMock2");
 
-    //Engine::Manager::instance()->setOutput("VisionToolMock2", "initNode VisionToolMock2's config");
-    // 获取结果
+    Engine::Manager::instance()->setOutput("VisionToolMock2", "VisionToolMock2 set output");
+    std::map<std::string, std::string> result = Engine::Manager::instance()->getBlockResult("NormalBlock2");
 
     std::cout << "Hello World!\n";
 

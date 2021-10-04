@@ -144,6 +144,7 @@ void Manager::innerRun(_In_ std::shared_ptr<MvpImage> img, _In_ std::string runF
 			// block´¦Àíº¯Êý
 			std::map<std::string, std::string> nodeMapOutJson = std::map<std::string, std::string>();
 			if (!blockInfo.ptr->process(img, nodeMapInJson, nodeMapOutJson)) {
+				m_running = false;
 				break;
 			}
 
