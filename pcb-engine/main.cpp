@@ -102,6 +102,12 @@ int main()
     Engine::Manager::instance()->setConfig("VisionToolMock2", "setConfig VisionToolMock2's config");
     std::string config = Engine::Manager::instance()->getConfig("VisionToolMock2");
 
+    std::vector<Engine::BlockInfo> blocks = Engine::Manager::instance()->getAllBlock();
+    for (const auto& blockInfo : blocks) {
+        std::map<std::string, std::string> result = blockInfo.ptr->getAllNodeResult();
+        std::cout << "Get blockInfo:\n";
+    }
+
     Engine::Manager::instance()->setOutput("VisionToolMock2", "VisionToolMock2 set output");
     std::map<std::string, std::string> result = Engine::Manager::instance()->getBlockResult("NormalBlock2");
 

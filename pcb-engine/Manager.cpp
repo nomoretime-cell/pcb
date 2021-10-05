@@ -90,6 +90,9 @@ bool Manager::run(_In_ std::shared_ptr<MvpImage> img, _In_ std::string runFromBl
 		// 程序运行中
 		return false;
 	}
+	if (m_runThread.joinable()) {
+		m_runThread.join();
+	}
 	m_running = true;
 	m_runThread = std::thread(std::bind(&Manager::innerRun, this, img, runFromBlockID, ""));
 	return true;
@@ -106,6 +109,9 @@ bool Manager::detachResultCallback() {
 }
 
 bool Manager::runOnce(_In_ std::shared_ptr<MvpImage> img, _In_ std::string runFromBlockID, _In_ std::string runToBlockID) {
+	if (m_runThread.joinable()) {
+		m_runThread.join();
+	}
 	m_running = false;
 	m_runThread = std::thread(std::bind(&Manager::innerRun, this, img, runFromBlockID, runToBlockID));
 	//m_runThread.join();
@@ -167,8 +173,9 @@ void Manager::innerRun(_In_ std::shared_ptr<MvpImage> img, _In_ std::string runF
 }
 
 bool Manager::stop() {
+	if (m_runThread.joinable())
+		m_runThread.join();
 	m_running = false;
-	m_runThread.join();
 	return true;
 }
 
