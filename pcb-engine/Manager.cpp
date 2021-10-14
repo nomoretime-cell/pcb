@@ -215,6 +215,17 @@ std::string Manager::addBlock(_In_ const std::string& blockType) {
 	return blockId;
 }
 
+bool Manager::clearAllBlock() {
+	for (const auto& blockInfo : m_vecBlockInfos) {
+		for (const auto& node : blockInfo.ptr->getAllNode()) {
+			node.second->uninit();
+		}
+	}
+	m_vecBlockInfos.clear();
+	NodeIDCreator::instance()->clearID();
+	m_blockIndex = 0;
+	return true;
+}
 
 std::string Manager::addNode(_In_ const std::string& blockID, _In_ const std::string& nodeType) {
 	for (const auto& blockInfo : m_vecBlockInfos) {

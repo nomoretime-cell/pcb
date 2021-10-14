@@ -122,6 +122,9 @@ public:
 	/// \retval blockId
 	std::string addBlock(_In_ const std::string& blockType);
 
+	/// \brief 清除所有block
+	bool clearAllBlock();
+
 	/// \brief 添加算子
 	/// \param[in] blockID blockID
 	/// \param[in] nodeType nodeType

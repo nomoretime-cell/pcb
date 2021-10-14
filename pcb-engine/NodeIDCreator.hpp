@@ -13,6 +13,10 @@ public:
 	int getID() {
 		return ++count;
 	}
+
+	void clearID() {
+		count = 0;
+	}
 private:
 	NodeIDCreator():count(0){
 	};

@@ -47,72 +47,73 @@ int main()
     vec.emplace_back("j");
     nlohmann::json j_vec(vec);
     std::string v = j_vec.dump();
-
-    std::string NormalBlock1 = Engine::Manager::instance()->addBlock("NormalBlock");
-    std::string VisionToolMock1 = Engine::Manager::instance()->addNode(NormalBlock1, "VisionToolMock2");
-
-    std::string NormalBlock2 = Engine::Manager::instance()->addBlock("NormalBlock");
-    std::string VisionToolMock2 = Engine::Manager::instance()->addNode(NormalBlock2, "VisionToolMock");
-    std::string VisionToolMock3 = Engine::Manager::instance()->addNode(NormalBlock2, "VisionToolMock");
-
-    std::string NormalBlock3 = Engine::Manager::instance()->addBlock("NormalBlock");
-    std::string VisionToolMock4 = Engine::Manager::instance()->addNode(NormalBlock3, "VisionToolMock");
-
-    std::string NormalBlock4 = Engine::Manager::instance()->addBlock("NormalBlock");
-    std::string VisionToolMoc5 = Engine::Manager::instance()->addNode(NormalBlock4, "VisionToolMock");
-
-    // 连线
-    std::string from1to2 = "{\"fromNodeID\": \"VisionToolMock1\", \"fromParam\" : \"1\",\"toNodeID\" : \"VisionToolMock2\", \"toParam\" : \"2\"}";
-    std::string from2to4 = "{\"fromNodeID\": \"VisionToolMock2\", \"fromParam\" : \"2\",\"toNodeID\" : \"VisionToolMock4\", \"toParam\" : \"4\"}";
-    std::string from3to4 = "{\"fromNodeID\": \"VisionToolMock3\", \"fromParam\" : \"3\",\"toNodeID\" : \"VisionToolMock4\", \"toParam\" : \"4\"}";
-    Engine::LinkItem link = Engine::LinkItem::getLinkItem(from2to4);
-    Engine::Manager::instance()->addLink(from1to2);
-    Engine::Manager::instance()->addLink(from2to4);
-    Engine::Manager::instance()->deleteLink(from2to4);
-    Engine::Manager::instance()->addLink(from3to4);
-
     // 设置回调
     Engine::Manager::instance()->attachResultCallback(resultCallback);
     //Engine::Manager::instance()->detachResultCallback();
+    do {
+        isFinish = false;
+        std::string NormalBlock1 = Engine::Manager::instance()->addBlock("NormalBlock");
+        std::string VisionToolMock1 = Engine::Manager::instance()->addNode(NormalBlock1, "VisionToolMock2");
 
-    // 运行
-    std::shared_ptr<MvpImage> image = std::make_shared<MvpImage>();
-    Engine::Manager::instance()->runOnce(image);
-    //Engine::Manager::instance()->runOnce(image, NormalBlock3, NormalBlock4);
+        std::string NormalBlock2 = Engine::Manager::instance()->addBlock("NormalBlock");
+        std::string VisionToolMock2 = Engine::Manager::instance()->addNode(NormalBlock2, "VisionToolMock");
+        std::string VisionToolMock3 = Engine::Manager::instance()->addNode(NormalBlock2, "VisionToolMock");
 
-    //Engine::Manager::instance()->attachResultCallback(resultCallback);
-    //Engine::Manager::instance()->run(image, NormalBlock2);
-    //Engine::Manager::instance()->run(nullptr);
+        std::string NormalBlock3 = Engine::Manager::instance()->addBlock("NormalBlock");
+        std::string VisionToolMock4 = Engine::Manager::instance()->addNode(NormalBlock3, "VisionToolMock");
 
-    while (!isFinish) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-    }
+        std::string NormalBlock4 = Engine::Manager::instance()->addBlock("NormalBlock");
+        std::string VisionToolMoc5 = Engine::Manager::instance()->addNode(NormalBlock4, "VisionToolMock");
 
-    // 获取输入
-    std::string input = Engine::Manager::instance()->getInput("VisionToolMock4");
+        // 连线
+        std::string from1to2 = "{\"fromNodeID\": \"VisionToolMock1\", \"fromParam\" : \"1\",\"toNodeID\" : \"VisionToolMock2\", \"toParam\" : \"2\"}";
+        std::string from2to4 = "{\"fromNodeID\": \"VisionToolMock2\", \"fromParam\" : \"2\",\"toNodeID\" : \"VisionToolMock4\", \"toParam\" : \"4\"}";
+        std::string from3to4 = "{\"fromNodeID\": \"VisionToolMock3\", \"fromParam\" : \"3\",\"toNodeID\" : \"VisionToolMock4\", \"toParam\" : \"4\"}";
+        Engine::LinkItem link = Engine::LinkItem::getLinkItem(from2to4);
+        Engine::Manager::instance()->addLink(from1to2);
+        Engine::Manager::instance()->addLink(from2to4);
+        Engine::Manager::instance()->deleteLink(from2to4);
+        Engine::Manager::instance()->addLink(from3to4);
 
-    std::map<std::string, std::string> node2Config;
-    node2Config.insert(std::pair<std::string, std::string>("VisionToolMock2", "VisionToolMock2's config"));
-    //node2Config.insert(std::pair<std::string, std::string>("VisionToolMock3", "VisionToolMock3's config"));
-    Engine::Manager::instance()->initBlock("NormalBlock2", nullptr, node2Config);
-    Engine::Manager::instance()->initNode("VisionToolMock2", nullptr, "initNode VisionToolMock2's config");
+        // 运行
+        std::shared_ptr<MvpImage> image = std::make_shared<MvpImage>();
+        Engine::Manager::instance()->runOnce(image);
+        //Engine::Manager::instance()->runOnce(image, NormalBlock3, NormalBlock4);
 
-    Engine::Manager::instance()->setInput("VisionToolMock2", "setInput VisionToolMock2's config");
+        //Engine::Manager::instance()->attachResultCallback(resultCallback);
+        //Engine::Manager::instance()->run(image, NormalBlock2);
+        //Engine::Manager::instance()->run(nullptr);
 
-    Engine::Manager::instance()->setConfig("VisionToolMock2", "setConfig VisionToolMock2's config");
-    std::string config = Engine::Manager::instance()->getConfig("VisionToolMock2");
+        while (!isFinish) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        }
 
-    std::vector<Engine::BlockInfo> blocks = Engine::Manager::instance()->getAllBlock();
-    for (const auto& blockInfo : blocks) {
-        std::map<std::string, std::string> result = blockInfo.ptr->getAllNodeResult();
-        std::cout << "Get blockInfo:\n";
-    }
+        // 获取输入
+        std::string input = Engine::Manager::instance()->getInput("VisionToolMock4");
 
-    Engine::Manager::instance()->setOutput("VisionToolMock2", "VisionToolMock2 set output");
-    std::map<std::string, std::string> result = Engine::Manager::instance()->getBlockResult("NormalBlock2");
+        std::map<std::string, std::string> node2Config;
+        node2Config.insert(std::pair<std::string, std::string>("VisionToolMock2", "VisionToolMock2's config"));
+        //node2Config.insert(std::pair<std::string, std::string>("VisionToolMock3", "VisionToolMock3's config"));
+        Engine::Manager::instance()->initBlock("NormalBlock2", nullptr, node2Config);
+        Engine::Manager::instance()->initNode("VisionToolMock2", nullptr, "initNode VisionToolMock2's config");
 
-    std::cout << "Hello World!\n";
+        Engine::Manager::instance()->setInput("VisionToolMock2", "setInput VisionToolMock2's config");
 
+        Engine::Manager::instance()->setConfig("VisionToolMock2", "setConfig VisionToolMock2's config");
+        std::string config = Engine::Manager::instance()->getConfig("VisionToolMock2");
+
+        std::vector<Engine::BlockInfo> blocks = Engine::Manager::instance()->getAllBlock();
+        for (const auto& blockInfo : blocks) {
+            std::map<std::string, std::string> result = blockInfo.ptr->getAllNodeResult();
+            std::cout << "Get blockInfo:\n";
+        }
+
+        Engine::Manager::instance()->setOutput("VisionToolMock2", "VisionToolMock2 set output");
+        std::map<std::string, std::string> result = Engine::Manager::instance()->getBlockResult("NormalBlock2");
+
+        std::cout << "Hello World!\n";
+        Engine::Manager::instance()->clearAllBlock();
+    } while (true);
     while (true) {
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
