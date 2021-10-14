@@ -10,15 +10,15 @@ Manager* Manager::instance()
 	return &ins;
 }
 
-Manager::Manager()
-{
+Manager::Manager(){
 	m_running = false;
 	m_blockIndex = 0;
 	m_resultCallback = nullptr;
 }
 
-Manager::~Manager()
-{
+Manager::~Manager(){
+	if (m_runThread.joinable())
+		m_runThread.join();
 }
 
 bool Manager::initBlock(_In_ const std::string& blockID, _In_ const std::shared_ptr<MvpImage>& img, _In_ const std::map<std::string, std::string>& nodeIDMapInitConfigJson) {
