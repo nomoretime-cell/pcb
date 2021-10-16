@@ -127,7 +127,7 @@ public:
 	/// \brief	增加算子
 	/// \param[in]	nodeType	算子类型
 	/// \retval		算子id
-	virtual std::string addNode(_In_ const std::string& nodeType) = 0;
+	virtual bool addNode(_In_ const std::string& nodeType, _InOut_ std::string& nodeID) = 0;
 
 	/// \brief	删除算子
 	/// \param[in]	nodeID	算子id

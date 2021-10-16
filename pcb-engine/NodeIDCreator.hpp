@@ -10,18 +10,38 @@ public:
 		return &ins;
 	}
 
-	int getID() {
-		return ++count;
+	int getIncrementID() {
+		return ++idCount;
 	}
 
 	void clearID() {
-		count = 0;
+		idCount = 0;
 	}
+
+	void setIDCount(int id) {
+		idCount = id;
+	}
+
+	int getIDCount() {
+		return idCount;
+	}
+
+	std::string getIndex(std::string ID) {
+		int numIndex = 0;
+		for (int index = 0; index < ID.length(); index++) {
+			if (ID[index] >= 48 && ID[index] <= 57) {
+				numIndex = index;
+				break;
+			}
+		}
+		return ID.substr(numIndex);
+	}
+
 private:
-	NodeIDCreator():count(0){
+	NodeIDCreator():idCount(0){
 	};
 	~NodeIDCreator() {};
-	std::atomic<int> count;
+	std::atomic<int> idCount;
 private:
 
 };

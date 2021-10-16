@@ -213,15 +213,27 @@ std::string NormalBlock::getBlockType() {
 	return m_blockType;
 }
 
-std::string NormalBlock::addNode(_In_ const std::string& nodeType) {
-	int nodeId = NodeIDCreator::instance()->getID();
-	std::shared_ptr<VisionTool::IVisionTool > node = VisionTool::VisionToolNodeFactory::createNode(nodeType, nodeId);
-	if (node == nullptr) {
-		return "";
+bool NormalBlock::addNode(_In_ const std::string& nodeType, _InOut_ std::string& nodeID) {
+	int tmpNodeID = 0;
+	if (nodeID == "") {
+		tmpNodeID = NodeIDCreator::instance()->getIncrementID();
 	}
-	std::string strNodeid = nodeType + std::to_string(nodeId);
+	else {
+		std::string indexStr = NodeIDCreator::instance()->getIndex(nodeID);
+		if (NodeIDCreator::instance()->getIDCount() < atoi(indexStr.c_str())) {
+			NodeIDCreator::instance()->setIDCount(atoi(indexStr.c_str()));
+		}
+		tmpNodeID = atoi(indexStr.c_str());
+	}
+
+	std::shared_ptr<VisionTool::IVisionTool > node = VisionTool::VisionToolNodeFactory::createNode(nodeType, tmpNodeID);
+	std::string strNodeid = nodeType + std::to_string(tmpNodeID);
+	if (node == nullptr) {
+		return false;
+	}
 	m_nodeIDMapNodePtr.insert(std::pair<std::string, std::shared_ptr<VisionTool::IVisionTool>>(strNodeid, node));
-	return strNodeid;
+	nodeID = strNodeid;
+	return true;
 }
 
 bool NormalBlock::removeNode(_In_ const std::string& nodeID) {

@@ -206,13 +206,30 @@ std::string Manager::getNodeResult(_In_ const std::string& nodeID) {
 	return "";
 }
 
-std::string Manager::addBlock(_In_ const std::string& blockType) {
-	std::string blockId = BLOCK_TYPE + std::to_string(++m_blockIndex);
+bool Manager::addBlock(_In_ const std::string& blockType, _InOut_ std::string& blockID) {
+	int tmpBlockID = 0;
+	if (blockID == "") {
+		tmpBlockID = ++m_blockIndex;
+	}
+	else {
+		std::string indexStr = NodeIDCreator::instance()->getIndex(blockID);
+		if (m_blockIndex < atoi(indexStr.c_str())) {
+			m_blockIndex = atoi(indexStr.c_str());
+		}
+		tmpBlockID = atoi(indexStr.c_str());
+	}
+
+
 	BlockInfo blockInfo;
-	blockInfo.ptr = Engine::NormalBlockFactory::createNode(BLOCK_TYPE, m_blockIndex);
-	blockInfo.blockId = blockId;
+	blockInfo.ptr = Engine::NormalBlockFactory::createNode(BLOCK_TYPE, tmpBlockID);
+	std::string strBlockId = BLOCK_TYPE + std::to_string(tmpBlockID);
+	blockInfo.blockId = strBlockId;
+	if (blockInfo.ptr == nullptr) {
+		return false;
+	}
 	m_vecBlockInfos.emplace_back(blockInfo);
-	return blockId;
+	blockID = strBlockId;
+	return true;
 }
 
 bool Manager::clearAllBlock() {
@@ -227,13 +244,13 @@ bool Manager::clearAllBlock() {
 	return true;
 }
 
-std::string Manager::addNode(_In_ const std::string& blockID, _In_ const std::string& nodeType) {
+bool Manager::addNode(_In_ const std::string& blockID, _In_ const std::string& nodeType, _InOut_ std::string& nodeID) {
 	for (const auto& blockInfo : m_vecBlockInfos) {
 		if (blockInfo.blockId == blockID) {
-			return blockInfo.ptr->addNode(nodeType);
+			return blockInfo.ptr->addNode(nodeType, nodeID);
 		}
 	}
-	return "";
+	return false;
 }
 
 bool Manager::removeNode(_In_ const std::string& blockID, _In_ const std::string& nodeID) {

@@ -69,7 +69,7 @@ public:
 
 	virtual std::string getBlockType() override;
 
-	virtual std::string addNode(_In_ const std::string& nodeType) override;
+	virtual bool addNode(_In_ const std::string& nodeType, _InOut_ std::string& nodeID) override;
 
 	virtual bool removeNode(_In_ const std::string& nodeID) override;
 

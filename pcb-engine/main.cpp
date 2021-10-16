@@ -41,6 +41,19 @@ void resultCallback(std::map<std::string, std::map<std::string, std::string>> re
 
 int main()
 {
+    std::string inString = "NormalBlock01";
+    int length = inString.length();
+    int size = inString.size();
+    int numIndex = 0;
+    for (int index = 0; index < inString.length(); index++) {
+        if (inString[index] >= 48 && inString[index] <= 57) {
+            numIndex = index;
+            break;
+        }
+    }
+    std::string result = inString.substr(numIndex);
+
+
     std::vector<std::string> vec;
     vec.emplace_back("y");
     vec.emplace_back("e");
@@ -52,18 +65,27 @@ int main()
     //Engine::Manager::instance()->detachResultCallback();
     do {
         isFinish = false;
-        std::string NormalBlock1 = Engine::Manager::instance()->addBlock("NormalBlock");
-        std::string VisionToolMock1 = Engine::Manager::instance()->addNode(NormalBlock1, "VisionToolMock2");
+        std::string NormalBlock1 = "NormalBlock1";
+        Engine::Manager::instance()->addBlock("NormalBlock", NormalBlock1);
+        std::string VisionToolMock1 = "VisionToolMock1";
+        Engine::Manager::instance()->addNode(NormalBlock1, "VisionToolMock2", VisionToolMock1);
 
-        std::string NormalBlock2 = Engine::Manager::instance()->addBlock("NormalBlock");
-        std::string VisionToolMock2 = Engine::Manager::instance()->addNode(NormalBlock2, "VisionToolMock");
-        std::string VisionToolMock3 = Engine::Manager::instance()->addNode(NormalBlock2, "VisionToolMock");
+        std::string NormalBlock2 = "NormalBlock2";
+        Engine::Manager::instance()->addBlock("NormalBlock", NormalBlock2);
+        std::string VisionToolMock2 = "VisionToolMock2";
+        Engine::Manager::instance()->addNode(NormalBlock2, "VisionToolMock", VisionToolMock2);
+        std::string VisionToolMock3 = "VisionToolMock3";
+        Engine::Manager::instance()->addNode(NormalBlock2, "VisionToolMock", VisionToolMock3);
 
-        std::string NormalBlock3 = Engine::Manager::instance()->addBlock("NormalBlock");
-        std::string VisionToolMock4 = Engine::Manager::instance()->addNode(NormalBlock3, "VisionToolMock");
+        std::string NormalBlock3 = "NormalBlock3";
+        Engine::Manager::instance()->addBlock("NormalBlock", NormalBlock3);
+        std::string VisionToolMock4 = "VisionToolMock4";
+        Engine::Manager::instance()->addNode(NormalBlock3, "VisionToolMock", VisionToolMock4);
 
-        std::string NormalBlock4 = Engine::Manager::instance()->addBlock("NormalBlock");
-        std::string VisionToolMoc5 = Engine::Manager::instance()->addNode(NormalBlock4, "VisionToolMock");
+        std::string NormalBlock4 = "NormalBlock4";
+        Engine::Manager::instance()->addBlock("NormalBlock", NormalBlock4);
+        std::string VisionToolMoc5 = "VisionToolMoc5";
+        Engine::Manager::instance()->addNode(NormalBlock4, "VisionToolMock", VisionToolMoc5);
 
         // Á¬Ïß
         std::string from1to2 = "{\"fromNodeID\": \"VisionToolMock1\", \"fromParam\" : \"1\",\"toNodeID\" : \"VisionToolMock2\", \"toParam\" : \"2\"}";

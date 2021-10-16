@@ -119,8 +119,9 @@ public:
 
 	/// \brief 順序添加block
 	/// \param[in] blockType blockType
-	/// \retval blockId
-	std::string addBlock(_In_ const std::string& blockType);
+	/// \param[inout] blockId
+	/// \retval 是否添加block成功
+	bool addBlock(_In_ const std::string& blockType, _InOut_ std::string& blockID);
 
 	/// \brief 清除所有block
 	bool clearAllBlock();
@@ -128,8 +129,9 @@ public:
 	/// \brief 添加算子
 	/// \param[in] blockID blockID
 	/// \param[in] nodeType nodeType
-	/// \retval nodeid
-	std::string addNode(_In_ const std::string& blockID, _In_ const std::string& nodeType);
+	/// \param[inout] nodeid
+	/// \retval 是否添加nodeid成功
+	bool addNode(_In_ const std::string& blockID, _In_ const std::string& nodeType, _InOut_ std::string& nodeID);
 
 	/// \brief 删除算子
 	/// \param[in] blockID blockID
