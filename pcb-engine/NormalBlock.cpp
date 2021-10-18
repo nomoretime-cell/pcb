@@ -293,6 +293,11 @@ bool NormalBlock::deleteLink(_In_ const LinkItem& link) {
 	return false;
 }
 
+bool NormalBlock::deleteAllLink() {
+	m_links.clear();
+	return true;
+}
+
 void NormalBlock::clearResult() {
 	m_nodeIDMapResult.clear();
 }

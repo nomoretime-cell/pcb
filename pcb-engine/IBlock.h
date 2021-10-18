@@ -148,10 +148,14 @@ public:
 	/// \retval		是否连线成功
 	virtual bool addLink(_In_ const LinkItem& link) = 0;
 
-	/// \brief	 更新连线（fromNodeID来自上一个block）
+	/// \brief	 删除连线（fromNodeID来自上一个block）
 	/// \param[in]	link 连线信息
 	/// \retval		是否更新连线成功
 	virtual bool deleteLink(_In_ const LinkItem& link) = 0;
+
+	/// \brief	 删除所有连线
+	/// \retval	 删除连线是否成功
+	virtual bool deleteAllLink() = 0;
 
 	/// \brief	 清除block下所有缓存结果
 	virtual void clearResult() = 0;

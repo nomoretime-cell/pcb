@@ -234,6 +234,7 @@ bool Manager::addBlock(_In_ const std::string& blockType, _InOut_ std::string& b
 
 bool Manager::clearAllBlock() {
 	for (const auto& blockInfo : m_vecBlockInfos) {
+		blockInfo.ptr->deleteAllLink();
 		for (const auto& node : blockInfo.ptr->getAllNode()) {
 			node.second->uninit();
 		}

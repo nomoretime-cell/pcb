@@ -81,6 +81,8 @@ public:
 
 	virtual bool deleteLink(_In_ const LinkItem& link) override;
 
+	virtual bool deleteAllLink() override;
+
 	virtual void clearResult() override;
 
 private:
